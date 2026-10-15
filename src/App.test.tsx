@@ -5,10 +5,10 @@ import App from './App'
 import { formatMXN } from './currency'
 
 describe('Nubora', () => {
-  it('inicia con historial vacío y moneda mexicana', () => {
+  it('inicia con análisis histórico y moneda mexicana', () => {
     render(<App />)
     expect(screen.getByRole('heading', { level: 1, name: 'Historial' })).toBeInTheDocument()
-    expect(screen.getByText('Tu historial comienza aquí')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Ventas mensuales observadas' })).toBeInTheDocument()
     expect(screen.getByText('MXN · Pesos mexicanos')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /CU-01 Historial/ })).toHaveAttribute('aria-current', 'page')
   })
@@ -23,7 +23,7 @@ describe('Nubora', () => {
     expect(screen.getByRole('heading', { name: 'Módulo pendiente' })).toBeInTheDocument()
     expect(screen.getByText(/No hay cálculos ni resultados generados/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Volver a Historial/ }))
-    expect(screen.getByText('Tu historial comienza aquí')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Ventas mensuales observadas' })).toBeInTheDocument()
   })
   it('permite navegar desde la ruta de trabajo', async () => {
     render(<App />)
