@@ -1,6 +1,6 @@
 # Nubora IA
 
-SPA en español con análisis histórico (CU-01), pronóstico demostrativo (CU-02) y optimización matemática de compras bajo presupuesto (CU-03). React, TypeScript, Vite, Tailwind CSS y Vitest; npm como gestor de paquetes.
+SPA en español con análisis histórico (CU-01), pronóstico demostrativo (CU-02), optimización matemática de compras (CU-03) y comparación reproducible de estrategias (CU-04). React, TypeScript, Vite, Tailwind CSS y Vitest; npm como gestor de paquetes.
 
 ## Requisitos y ejecución
 
@@ -26,13 +26,13 @@ Para instalaciones reproducibles a partir de package-lock.json puede usarse `npm
 - **CU-01 Historial:** dataset ficticio fijo, filtros por SKU/categoría/periodo, gráfico y resumen mensual, indicadores, comparación anual y detalle paginado.
 - **CU-02 Pronóstico:** 60 pronósticos demostrativos por SKU para enero, febrero y marzo de 2026, selección de método y validación temporal MAE/WAPE.
 - **CU-03 Plan de compra:** recomendación exacta y determinista de cantidades enteras bajo presupuesto global MXN, con exclusiones explícitas y filtros sólo de presentación.
-- **CU-04 Comparación:** pendiente, sin escenarios ni resultados.
+- **CU-04 Comparación:** plan óptimo de CU-03 frente a baseline proporcional exacto, con presupuesto compartido, diferencias explicadas y filtros sólo de presentación.
 
 Los datos son de demostración, claramente identificados en pantalla. No hay backend, servicios de pago, llamadas a APIs ni integraciones externas. Los importes usan pesos mexicanos (MXN); `src/currency.ts` centraliza su formato. Los estados sin datos no representan importes de cero. La selección del módulo se conserva únicamente mientras está abierta la página; recargar vuelve a Historial.
 
 ## Estructura
 
-- `src/App.tsx`: navegación accesible y módulos pendientes; reutiliza el módulo Historial.
+- `src/App.tsx`: navegación accesible entre los cuatro módulos; reutiliza sus componentes.
 - `src/history/data.ts`: tipos y generador determinista del dataset.
 - `src/history/analysis.ts`: funciones puras de filtros, agregación, indicadores, calidad y comparación.
 - `src/history/History.tsx`, `MonthlyChart.tsx`: filtros, gráfico SVG accesible y tablas responsive.
@@ -43,9 +43,12 @@ Los datos son de demostración, claramente identificados en pantalla. No hay bac
 - `src/purchases/model.ts`: presupuesto decimal exacto, preparación de datos de CU-01/CU-02, solver, resumen y filtros de presentación.
 - `src/purchases/PurchasePlan.tsx`, `PurchaseChart.tsx`: presupuesto, indicadores, gráfica y tabla de CU-03.
 - `src/purchases/*.test.ts*`: optimalidad, restricciones, datos inválidos, determinismo y preservación del plan global.
+- `src/comparison/model.ts`: baseline racional BigInt, rangos seguros, validación cruzada, diferencias y filtros.
+- `src/comparison/Comparison.tsx`, `ComparisonChart.tsx`: tarjetas, gráfica de escalas separadas, explicación y tabla por SKU.
+- `src/comparison/*.test.ts*`: factibilidad, dominancia, exclusiones compartidas, aritmética, regresión y filtros sin recálculo.
 - `src/styles.css`: Tailwind CSS y diseño responsive para móvil y escritorio.
 - `src/currency.ts`: formato monetario en español de México.
-- `src/App.test.tsx`, `src/test-setup.ts`: pruebas de navegación, estados pendientes y moneda con Testing Library y Vitest.
+- `src/App.test.tsx`, `src/test-setup.ts`: pruebas de navegación entre casos de uso y moneda con Testing Library y Vitest.
 - `vite.config.ts`, `tsconfig.json`, `eslint.config.js`: configuración de desarrollo, compilación, pruebas y lint.
 - `index.html`: entrada HTML en español.
 
@@ -53,7 +56,7 @@ No se requieren variables de entorno. `.gitignore` excluye `node_modules`, `dist
 
 ## Revisión
 
-CU-01, CU-02 y la SPA inicial ya están integrados en `main`. CU-03 se prepara en `feat/cu03-optimizacion`, creada desde `main` actualizado, con PR en borrador hacia `main` y sin integración automática. Antes de integrar, ejecutar instalación, compilación, pruebas y lint. Revisar en navegador a 375 px y escritorio, navegación por teclado y los cuatro casos de uso.
+CU-01, CU-02 y CU-03 ya están integrados en `main`. CU-04 se prepara en `feat/cu04-comparacion`, creada desde `main` actualizado (b093e10), con PR en borrador hacia `main` y sin integración automática. Antes de integrar, ejecutar instalación, compilación, pruebas y lint. Revisar en navegador a 375 px y escritorio, navegación por teclado y los cuatro casos de uso.
 
 
 ## Dataset ficticio reproducible (v1)
@@ -100,7 +103,7 @@ Se elige el menor MAE por SKU entre métodos que cubran 12/12 objetivos. En empa
 
 ### Alcance y limitaciones
 
-Son resultados orientativos sobre datos sintéticos, no predicciones comerciales garantizadas. Dos años no prueban estacionalidad confiable. Las ventas observadas pueden subestimar la demanda por faltantes: se identifican los meses afectados por SKU y no se inventan ventas perdidas. Las promociones se advierten como factor no modelado; no se anticipan promociones, cambios de precio ni restricciones futuras. El backtesting evalúa ventas observadas, también restringidas por inventario. La selección y las métricas usan la misma ventana de validación; no hay un test independiente posterior ni intervalos probabilísticos. CU-02 no implementa compras ni comparación de escenarios; CU-03 se documenta a continuación y CU-04 sigue pendiente. No hay backend ni integraciones externas.
+Son resultados orientativos sobre datos sintéticos, no predicciones comerciales garantizadas. Dos años no prueban estacionalidad confiable. Las ventas observadas pueden subestimar la demanda por faltantes: se identifican los meses afectados por SKU y no se inventan ventas perdidas. Las promociones se advierten como factor no modelado; no se anticipan promociones, cambios de precio ni restricciones futuras. El backtesting evalúa ventas observadas, también restringidas por inventario. La selección y las métricas usan la misma ventana de validación; no hay un test independiente posterior ni intervalos probabilísticos. CU-02 no implementa compras ni comparación de escenarios; CU-03 y CU-04 se documentan en las secciones siguientes. No hay backend ni integraciones externas.
 
 ### Verificación de CU-02
 
@@ -155,8 +158,71 @@ Se supone que toda la compra estará disponible al inicio de un horizonte trimes
 
 ### Pruebas de CU-03
 
-Suite ejecutada: **103 pruebas aprobadas en 7 archivos**. Incluye comparación exhaustiva con fuerza bruta en **2,784 casos pequeños** (tres SKU con necesidad 0–3, como máximo 64 combinaciones por caso) para ambos objetivos; restricciones, cero, presupuesto insuficiente/suficiente, centavos, empate ordinal, presupuesto grande sin expandir unidades, costos inválidos, registros ausentes/duplicados, inventario mayor que demanda, cobertura, no mutación, determinismo y reordenamiento. Una prueba de interfaz verifica que los filtros no vuelven a llamar al cálculo global. Se conservan las suites de CU-01/CU-02 y se comprueba que CU-04 sigue pendiente.
+Suite ejecutada: **103 pruebas aprobadas en 7 archivos**. Incluye comparación exhaustiva con fuerza bruta en **2,784 casos pequeños** (tres SKU con necesidad 0–3, como máximo 64 combinaciones por caso) para ambos objetivos; restricciones, cero, presupuesto insuficiente/suficiente, centavos, empate ordinal, presupuesto grande sin expandir unidades, costos inválidos, registros ausentes/duplicados, inventario mayor que demanda, cobertura, no mutación, determinismo y reordenamiento. Una prueba de interfaz verifica que los filtros no vuelven a llamar al cálculo global. Se conservan las suites de CU-01/CU-02; la navegación ampliada se valida también en CU-04.
 
 Validación ejecutada: `npm ci` correcto (224 paquetes instalados, 225 auditados, cero vulnerabilidades); `npm run build` correcto; `npm test` correcto; `npm run lint` sin errores. npm conserva avisos de obsolescencia de ESLint 9 y whatwg-encoding. Revisión visual de escritorio y móvil 375 px sin desbordamiento horizontal de página. La selección de categoría Hogar mostró 5 filas sin cambiar el resumen global. Presupuesto cero mostró compras cero; MXN 1,000,000.00 compró exactamente las 2,274 unidades necesarias, por MXN 106,278.00, con cobertura 100%.
 
 Ejemplo reproducible con MXN 25,000.00: 20 SKU elegibles, demanda 3,574 unidades, inventario 1,300, necesidad 2,274, compra recomendada 764, gasto MXN 24,960.50 y saldo MXN 39.50. Cobertura estimada: 2,064 / 3,574 = 57.8% en pantalla. Capturas: [escritorio](docs/screenshots/cu03-escritorio.png) y [móvil](docs/screenshots/cu03-movil.png).
+
+
+## CU-04: comparación y explicación de recomendaciones
+
+Ambas estrategias usan la misma salida de `preparePurchaseData()` de CU-03, calculada una sola vez por dataset, y el mismo presupuesto validado con `parseBudget()`. El optimizado se obtiene llamando a `buildPlan(prepared, presupuesto)`. No se reconstruyen pronósticos, costos ni inventarios. Los archivos de `src/history`, `src/forecast` y `src/purchases` permanecen sin cambios respecto de `main`; no se corrigió ni modificó el optimizador.
+
+### Baseline proporcional reproducible
+
+Sólo sobre SKU elegibles de CU-03, con las mismas causas de exclusión:
+
+```text
+C = sum(necesidad_i * costoUnitarioCentavos_i)
+T = min(presupuestoCentavos, C)
+cantidadBase_i = floor(necesidad_i * T / C), si C > 0
+cantidadBase_i = 0, si C = 0
+```
+
+`C`, `T`, productos, división, gastos y saldos internos usan **BigInt**. Nunca se calcula un factor decimal en punto flotante ni se redondean costos. Las cantidades se convierten a Number únicamente tras comprobar el rango entero seguro; también se validan los totales antes de convertirlos. El costo total de la necesidad puede superar MAX_SAFE_INTEGER: se conserva en BigInt y se formatea directamente como moneda sin perder centavos. Se conserva el límite presupuestario de CU-03: MXN 10,000,000,000.00. Si un total que debe publicarse como Number excede el rango seguro, se rechaza el cálculo en vez de mostrar resultados inválidos.
+
+**No se redistribuye el saldo tras el redondeo hacia abajo**, aunque alcance para comprar alguna unidad. Ésta es la definición del baseline, no un segundo algoritmo de optimización. Es determinista y su cálculo es lineal en la cantidad de SKU. Factibilidad: `0 <= floor(necesidad_i*T/C) <= necesidad_i` y `sum(cantidadBase_i*costo_i) <= (T/C)*C = T <= presupuesto`. Si C es cero, no hay necesidad elegible con costo positivo y se compra cero.
+
+### Entradas, cobertura y comprobaciones
+
+Las filas excluidas conservan exactamente las causas producidas por CU-03, con cantidad/gasto/diferencia N/D, nunca cero. No se recalculan elegibilidades con reglas diferentes para cada estrategia. Antes de presentar conclusiones se comprueban identidad de SKU y datos, exclusiones, cantidades enteras acotadas, costos de fila, presupuesto y totales de ambas estrategias.
+
+La cobertura usa la fórmula de CU-03:
+
+```text
+unidadesCubiertas = sum(min(inventario_i, demanda_i) + cantidad_i)
+coberturaPorcentaje = unidadesCubiertas / sum(demanda_i) * 100
+```
+
+El inventario útil es el mismo en ambas estrategias; por eso la diferencia de unidades cubiertas coincide con la diferencia de unidades compradas. Con demanda elegible total cero, el porcentaje de cobertura y su diferencia son **N/D**. No se transfieren excedentes entre SKU.
+
+Las diferencias siempre son **optimizado menos baseline**: unidades, gasto en centavos y cobertura en **puntos porcentuales**. La diferencia de cobertura se calcula sobre los totales sin redondear para presentación, no restando porcentajes ya formateados. Los puntos porcentuales no son variación porcentual relativa. El gasto puede subir al cubrir más unidades; no se infieren márgenes ni ingresos. Las diferencias por SKU pueden ser negativas aunque el total optimizado no sea menor.
+
+Se verifica explícitamente que el optimizado no compre/cubra menos unidades que el baseline válido. También se comprueba su objetivo secundario en caso de empate. Si falla algún chequeo, se muestra error y se ocultan tarjetas, gráfica y explicación de superioridad. Si hay empate de unidades/gasto, se explica sin afirmar una mejora inexistente. Si las unidades empatan y el gasto es menor, se señala que no mejoró la cobertura.
+
+### Interfaz y límites
+
+Un único presupuesto global alimenta ambas estrategias. Los filtros SKU/categoría sólo afectan la tabla; tarjetas, diferencias y gráfica son globales y no cambian. Los filtros no son dependencias del cálculo memoizado. La gráfica usa paneles separados para unidades y porcentaje de cobertura, evitando mezclar escalas. La tabla muestra necesidad, demanda, inventario, costo unitario, compras, gastos y diferencia por SKU.
+
+Datos sintéticos, faltantes históricos, costos de referencia de diciembre de 2025 y horizonte trimestral acumulado limitan las conclusiones. Se supone compra disponible al inicio; no se modelan plazos, fletes ni restricciones de proveedores. No se estiman ventas perdidas. No hay compras reales, servicios externos ni cambios en el optimizador. Los resultados describen exclusivamente el modelo.
+
+### Registro dinámico del fixture: presupuesto MXN 25,000.00
+
+Costo total de necesidad: **MXN 106,278.00** (10,627,800 centavos). Fracción racional del baseline: `2500000/10627800`. Inventario útil compartido: 1,300 unidades; demanda elegible: 3,574; 20 SKU elegibles sin exclusiones.
+
+| Métrica | Baseline proporcional | Optimizado CU-03 |
+| --- | ---: | ---: |
+| Unidades compradas | 526 | 764 |
+| Gasto MXN | 24,639.25 | 24,960.50 |
+| Saldo MXN | 360.75 | 39.50 |
+| Unidades de demanda cubiertas | 1,826 | 2,064 |
+| Cobertura mostrada | 51.09% | 57.75% |
+
+Diferencias: **+238 unidades, +MXN 321.25 de gasto y +6.66 puntos porcentuales** (porcentajes redondeados sólo para presentar). Las cifras se calculan en ejecución, no se usan como entradas del componente. Una prueba de regresión confirma las 764 unidades/gasto/saldo aprobados de CU-03 y contrasta el baseline con una evaluación independiente de la fórmula BigInt.
+
+### Validación de CU-04
+
+`npm ci`, `npm run build`, `npm test` y `npm run lint` ejecutados correctamente. Suite: **135 pruebas aprobadas en 9 archivos**. Incluye 2,784 casos pequeños comparando factibilidad y unidades optimizadas >= baseline; cero, insuficiente, suficiente, necesidad cero, exclusiones y costos inválidos, redondeo, centavos, BigInt mayor que MAX_SAFE_INTEGER, límites de conversión, signos de diferencias, empates, identidad de entradas, consistencia, determinismo, no mutación y filtros sin recálculo. Se conservan las suites anteriores y se prueba navegación entre los cuatro casos de uso.
+
+La instalación final auditó 225 paquetes (224 instalados), con cero vulnerabilidades. Se mantienen avisos de obsolescencia de ESLint 9 y whatwg-encoding. Revisión del build en escritorio y móvil 375 px sin desbordamiento horizontal de página; filtrar Hogar muestra cinco filas con ambas tarjetas globales intactas. Capturas: [escritorio](docs/screenshots/cu04-escritorio.png) y [móvil](docs/screenshots/cu04-movil.png).
