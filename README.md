@@ -1,6 +1,6 @@
 # Nubora IA
 
-SPA en español con análisis histórico (CU-01) y pronóstico demostrativo por SKU (CU-02). React, TypeScript, Vite, Tailwind CSS y Vitest; npm como gestor de paquetes.
+SPA en español con análisis histórico (CU-01), pronóstico demostrativo (CU-02) y optimización matemática de compras bajo presupuesto (CU-03). React, TypeScript, Vite, Tailwind CSS y Vitest; npm como gestor de paquetes.
 
 ## Requisitos y ejecución
 
@@ -25,7 +25,7 @@ Para instalaciones reproducibles a partir de package-lock.json puede usarse `npm
 
 - **CU-01 Historial:** dataset ficticio fijo, filtros por SKU/categoría/periodo, gráfico y resumen mensual, indicadores, comparación anual y detalle paginado.
 - **CU-02 Pronóstico:** 60 pronósticos demostrativos por SKU para enero, febrero y marzo de 2026, selección de método y validación temporal MAE/WAPE.
-- **CU-03 Plan de compra:** pendiente, sin planes ni importes calculados.
+- **CU-03 Plan de compra:** recomendación exacta y determinista de cantidades enteras bajo presupuesto global MXN, con exclusiones explícitas y filtros sólo de presentación.
 - **CU-04 Comparación:** pendiente, sin escenarios ni resultados.
 
 Los datos son de demostración, claramente identificados en pantalla. No hay backend, servicios de pago, llamadas a APIs ni integraciones externas. Los importes usan pesos mexicanos (MXN); `src/currency.ts` centraliza su formato. Los estados sin datos no representan importes de cero. La selección del módulo se conserva únicamente mientras está abierta la página; recargar vuelve a Historial.
@@ -40,6 +40,9 @@ Los datos son de demostración, claramente identificados en pantalla. No hay bac
 - `src/forecast/engine.ts`: funciones puras de pronóstico, backtesting, selección y filtros sobre el dataset de CU-01.
 - `src/forecast/Forecast.tsx`, `ForecastChart.tsx`: pantalla y gráfica que separa histórico de pronóstico.
 - `src/forecast/*.test.ts*`: cálculos, fuga temporal, ceros, insuficiencia de datos y consistencia de filtros/tabla/gráfico.
+- `src/purchases/model.ts`: presupuesto decimal exacto, preparación de datos de CU-01/CU-02, solver, resumen y filtros de presentación.
+- `src/purchases/PurchasePlan.tsx`, `PurchaseChart.tsx`: presupuesto, indicadores, gráfica y tabla de CU-03.
+- `src/purchases/*.test.ts*`: optimalidad, restricciones, datos inválidos, determinismo y preservación del plan global.
 - `src/styles.css`: Tailwind CSS y diseño responsive para móvil y escritorio.
 - `src/currency.ts`: formato monetario en español de México.
 - `src/App.test.tsx`, `src/test-setup.ts`: pruebas de navegación, estados pendientes y moneda con Testing Library y Vitest.
@@ -50,7 +53,7 @@ No se requieren variables de entorno. `.gitignore` excluye `node_modules`, `dist
 
 ## Revisión
 
-CU-01 y la SPA inicial ya están integrados en `main`. CU-02 se prepara en `feat/cu02-pronostico`, creada desde `main`, con PR hacia `main` y sin integración automática. Antes de integrar, ejecutar instalación, compilación, pruebas y lint. Revisar en navegador a 375 px y escritorio, navegación por teclado y los cuatro casos de uso.
+CU-01, CU-02 y la SPA inicial ya están integrados en `main`. CU-03 se prepara en `feat/cu03-optimizacion`, creada desde `main` actualizado, con PR en borrador hacia `main` y sin integración automática. Antes de integrar, ejecutar instalación, compilación, pruebas y lint. Revisar en navegador a 375 px y escritorio, navegación por teclado y los cuatro casos de uso.
 
 
 ## Dataset ficticio reproducible (v1)
@@ -97,7 +100,7 @@ Se elige el menor MAE por SKU entre métodos que cubran 12/12 objetivos. En empa
 
 ### Alcance y limitaciones
 
-Son resultados orientativos sobre datos sintéticos, no predicciones comerciales garantizadas. Dos años no prueban estacionalidad confiable. Las ventas observadas pueden subestimar la demanda por faltantes: se identifican los meses afectados por SKU y no se inventan ventas perdidas. Las promociones se advierten como factor no modelado; no se anticipan promociones, cambios de precio ni restricciones futuras. El backtesting evalúa ventas observadas, también restringidas por inventario. La selección y las métricas usan la misma ventana de validación; no hay un test independiente posterior ni intervalos probabilísticos. No se implementan CU-03 ni CU-04, backend ni integraciones externas.
+Son resultados orientativos sobre datos sintéticos, no predicciones comerciales garantizadas. Dos años no prueban estacionalidad confiable. Las ventas observadas pueden subestimar la demanda por faltantes: se identifican los meses afectados por SKU y no se inventan ventas perdidas. Las promociones se advierten como factor no modelado; no se anticipan promociones, cambios de precio ni restricciones futuras. El backtesting evalúa ventas observadas, también restringidas por inventario. La selección y las métricas usan la misma ventana de validación; no hay un test independiente posterior ni intervalos probabilísticos. CU-02 no implementa compras ni comparación de escenarios; CU-03 se documenta a continuación y CU-04 sigue pendiente. No hay backend ni integraciones externas.
 
 ### Verificación de CU-02
 
@@ -106,3 +109,54 @@ Son resultados orientativos sobre datos sintéticos, no predicciones comerciales
 Última ejecución sobre CU-02: `npm ci` correcto (224 paquetes instalados, cero vulnerabilidades); `npm run build` correcto; `npm test` con **54 pruebas aprobadas en 5 archivos**; `npm run lint` correcto. La primera compilación detectó nombres ambiguos por mayúsculas y una opción de tipado en una prueba; ambos errores se corrigieron antes de la ejecución final. Sin cambios en `src/history` respecto de `main`.
 
 Revisión del build en navegador: escritorio y 375 px de ancho, sin desbordamiento horizontal de página. Las tablas y la gráfica permiten desplazamiento interno. Filtros categoría Despensa + SKU-001: 3 filas, pronósticos 31, 28 y 32 unidades. Capturas: [escritorio](docs/screenshots/cu02-escritorio.png) y [móvil](docs/screenshots/cu02-movil.png).
+
+
+## CU-03: optimización matemática de compras
+
+Recomendación DEMOSTRATIVA, sin compras reales, backend, Tiendanube ni IA generativa. Se usa el mismo `demoDataset` generado por `createDataset()` y `forecastProduct()` de CU-02; no se duplica el historial ni se genera otro pronóstico. Los archivos de `src/history` y `src/forecast` permanecen sin modificaciones.
+
+### Datos y variables
+
+Para cada SKU elegible:
+
+- Demanda = suma de los tres pronósticos enteros de enero–marzo de 2026 que devuelve CU-02.
+- Inventario = existencias del corte fijo **2025-12-31**; no es inventario en tiempo real.
+- Necesidad = `max(0, demanda - inventario)`; no se transfieren excedentes entre SKU.
+- Costo unitario = `acquisitionCostCents` del único registro válido de diciembre de 2025. Debe ser entero positivo y seguro. Es un costo histórico de referencia, **no una cotización futura**.
+- Cantidad de compra `x_i` entera entre cero y la necesidad del SKU.
+
+Se excluyen con causa los SKU con catálogo duplicado/vacío, pronóstico N/D o incompleto, inventario inválido o de otro corte, o costo de diciembre ausente/duplicado/no positivo/no entero. Las filas excluidas conservan N/D en cantidad y gasto: nunca se sustituyen por cero. Totales y optimalidad se refieren al subconjunto elegible, con recuento de exclusiones visible.
+
+### Modelo y solución exacta
+
+Restricción: `sum(x_i * costo_i_centavos) <= presupuesto_centavos`.
+
+Objetivo primario: maximizar `sum(x_i)`, unidades adicionales de demanda pronosticada cubiertas. Objetivo secundario: minimizar el gasto entre todas las soluciones con esa cobertura. **No se ponderan margen, ingreso, rentabilidad ni prioridades comerciales.**
+
+Todas las unidades tienen el mismo valor objetivo (=1), cada SKU tiene costo unitario constante y sólo hay cotas superiores por SKU. Por ello se puede ordenar por costo ascendente y comprar por bloques hasta agotar la necesidad o el presupuesto. Con costos iguales se usa SKU ascendente por código de caracteres (sin dependencia de configuración regional ni orden de objetos). Se asigna `min(necesidad, saldo / costo con división entera)`; no se crean objetos por unidad y no se usa DP por presupuesto.
+
+Prueba: para cualquier cantidad K, las K unidades más baratas disponibles minimizan el gasto para cubrir K unidades. Si una solución usara una unidad más cara y dejara una más barata disponible, intercambiarlas preservaría la cobertura y reduciría su gasto. El algoritmo compra ese prefijo de unidades hasta que el siguiente costo supera el saldo; entonces ni la selección más barata de K+1 unidades cabe en el presupuesto. Por tanto K es cobertura máxima y el gasto para K es mínimo. Las únicas decisiones intercambiables en la frontera son costos iguales, resueltas por SKU. Tiempo **O(n log n)** y memoria **O(n)**, sin dependencia de la magnitud del presupuesto o la cantidad de unidades. Es un algoritmo greedy **exacto para este modelo particular**, no una heurística para una mochila general con beneficios distintos.
+
+`nextUnitCostCents` identifica la unidad pendiente más barata: si queda necesidad, el saldo debe ser menor que ese costo. Si no queda necesidad, se compra exactamente la necesidad y no más. Con presupuesto cero, toda cantidad elegible es cero.
+
+### Centavos, presupuesto y límites
+
+La entrada admite punto o coma decimal, hasta dos decimales y sin separadores de miles. Por ejemplo, `0.29` se convierte exactamente en 29 centavos mediante conversión textual y BigInt, sin `parseFloat`, multiplicaciones decimales ni redondeo de costos. Montos negativos, vacíos, científicos, con más decimales o mal formados no producen plan ni conservan uno anterior.
+
+Presupuesto permitido: de cero a **1,000,000,000,000 centavos** (MXN 10,000,000,000.00). La división presupuestaria y los productos se realizan con BigInt. Los importes publicados son números enteros seguros, acotados por el presupuesto; la división entre 100 ocurre únicamente al presentar moneda. No se redondean costos durante la optimización. Cantidades, costos e inventarios deben ser enteros seguros; si los totales exceden el rango entero seguro, se rechaza el cálculo y no se presenta como solución óptima. El fixture de 20 SKU está muy por debajo de esos límites.
+
+### Cobertura, filtros y simplificaciones
+
+La cobertura estimada es `sum(min(inventario_i, demanda_i) + x_i) / sum(demanda_i) * 100`, sólo sobre SKU elegibles. Un excedente de inventario de un producto no cubre demanda de otro. Demanda cero implica cobertura porcentual N/D.
+
+El presupuesto se aplica globalmente a los 20 SKU. Los filtros de SKU/categoría sólo seleccionan filas ya resueltas para tabla y gráfica; no son dependencias del cálculo memoizado del plan. Las tarjetas siempre muestran totales globales. Cambiar el presupuesto sí recalcula el plan completo. La gráfica compara necesidad con compra recomendada usando las mismas filas que la tabla.
+
+Se supone que toda la compra estará disponible al inicio de un horizonte trimestral acumulado. No se modelan fechas de llegada, plazos, rotación mensual, impuestos adicionales, fletes, mínimos de compra, capacidad, caducidad ni prioridades. No se ejecutan compras. Datos sintéticos y faltantes históricos limitan los pronósticos y, por tanto, la utilidad comercial del plan; se señalan los meses afectados sin inventar ventas perdidas. La optimalidad es del modelo matemático, no una garantía de óptimo comercial ni de demanda verdadera. Cambiar objetivos a margen o añadir otras restricciones requeriría revisar algoritmo y prueba.
+
+### Pruebas de CU-03
+
+Suite ejecutada: **103 pruebas aprobadas en 7 archivos**. Incluye comparación exhaustiva con fuerza bruta en **2,784 casos pequeños** (tres SKU con necesidad 0–3, como máximo 64 combinaciones por caso) para ambos objetivos; restricciones, cero, presupuesto insuficiente/suficiente, centavos, empate ordinal, presupuesto grande sin expandir unidades, costos inválidos, registros ausentes/duplicados, inventario mayor que demanda, cobertura, no mutación, determinismo y reordenamiento. Una prueba de interfaz verifica que los filtros no vuelven a llamar al cálculo global. Se conservan las suites de CU-01/CU-02 y se comprueba que CU-04 sigue pendiente.
+
+Validación ejecutada: `npm ci` correcto (224 paquetes instalados, 225 auditados, cero vulnerabilidades); `npm run build` correcto; `npm test` correcto; `npm run lint` sin errores. npm conserva avisos de obsolescencia de ESLint 9 y whatwg-encoding. Revisión visual de escritorio y móvil 375 px sin desbordamiento horizontal de página. La selección de categoría Hogar mostró 5 filas sin cambiar el resumen global. Presupuesto cero mostró compras cero; MXN 1,000,000.00 compró exactamente las 2,274 unidades necesarias, por MXN 106,278.00, con cobertura 100%.
+
+Ejemplo reproducible con MXN 25,000.00: 20 SKU elegibles, demanda 3,574 unidades, inventario 1,300, necesidad 2,274, compra recomendada 764, gasto MXN 24,960.50 y saldo MXN 39.50. Cobertura estimada: 2,064 / 3,574 = 57.8% en pantalla. Capturas: [escritorio](docs/screenshots/cu03-escritorio.png) y [móvil](docs/screenshots/cu03-movil.png).
