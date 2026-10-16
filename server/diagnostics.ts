@@ -1,6 +1,6 @@
 export type Stage = 'context' | 'provider' | 'grounding'
 export type Code = 'GEMINI_HTTP' | 'GEMINI_SDK' | 'GEMINI_BLOCKED' | 'GEMINI_INCOMPLETE' | 'GEMINI_TEXT_INVALID' | 'GEMINI_JSON_INVALID' | 'GROUND_SHAPE' | 'GROUND_LENGTH' | 'GROUND_UNKNOWN_REFERENCE' | 'GROUND_MISSING_REFERENCE' | 'GROUND_FORBIDDEN_CONTENT' | 'COPILOT_TIMEOUT' | 'COPILOT_INTERNAL'
-export type Details = { httpStatus?: number; providerStatus?: string; providerReason?: string; finishReason?: string }
+export type Details = { httpStatus?: number; providerStatus?: string; providerReason?: string; finishReason?: string; model?: string }
 export class CopilotError extends Error {
   constructor(readonly code: Code, readonly details: Details = {}) { super(code) }
 }

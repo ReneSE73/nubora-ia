@@ -9,7 +9,7 @@ import { analyzeForecast } from '../src/forecast/engine'
 import { preparePurchaseData } from '../src/purchases/model'
 import { buildComparison } from '../src/comparison/model'
 const sdk = vi.hoisted(() => ({ generate: vi.fn(), client: vi.fn() }))
-vi.mock('@google/genai', () => ({ GoogleGenAI: class {
+vi.mock('@google/genai', () => ({ ThinkingLevel: { MINIMAL: 'MINIMAL' }, GoogleGenAI: class {
   models = { generateContent: sdk.generate }
   constructor(options: unknown) { sdk.client(options) }
 } }))
@@ -126,7 +126,8 @@ describe('API con proveedor simulado', () => {
     const r = await createHandler({ ...env, GEMINI_MODEL: undefined })(req())
     expect(r.status).toBe(200)
     expect((await r.json()).model).toBe(DEFAULT_GEMINI_MODEL)
-    expect(sdk.generate.mock.calls[0][0].model).toBe('gemini-2.5-flash-lite')
+    expect(sdk.generate.mock.calls[0][0].model).toBe('gemini-3.1-flash-lite')
+    expect(sdk.generate.mock.calls[0][0].config.thinkingConfig).toEqual({ thinkingLevel: 'MINIMAL' })
   })
   it('rechaza errores SDK, bloqueos, truncamiento, falta de candidatos y JSON inválido', async () => {
     sdk.generate.mockRejectedValueOnce(new Error(env.GEMINI_API_KEY))
