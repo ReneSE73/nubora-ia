@@ -13,17 +13,17 @@ export function geminiProvider(env: Environment): Provider {
     // apiKey explícita y vertexai:false evitan otras credenciales/backends implícitos.
     let response
     try {
-    const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY, vertexai: false, httpOptions: { timeout: 15000, retryOptions: { attempts: 1 } } })
-    response = await ai.models.generateContent({
-      model: env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
-      contents: JSON.stringify({ question, context: context.facts, references: context.evidence }),
-      config: {
-        systemInstruction: instructions, abortSignal: signal, maxOutputTokens: 700,
-        thinkingConfig: { thinkingBudget: 0 }, candidateCount: 1,
-        responseMimeType: 'application/json',
-        responseJsonSchema: { type: 'object', properties: { sentences: { type: 'array', minItems: 2, maxItems: 4, items: { type: 'string', description: 'Oración breve con al menos una referencia {{ruta}} exacta de references; sin cifras literales.' } } }, required: ['sentences'], additionalProperties: false },
-      },
-    })
+      const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY, vertexai: false, httpOptions: { timeout: 15000, retryOptions: { attempts: 1 } } })
+      response = await ai.models.generateContent({
+        model: env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
+        contents: JSON.stringify({ question, context: context.facts, references: context.evidence }),
+        config: {
+          systemInstruction: instructions, abortSignal: signal, maxOutputTokens: 700,
+          thinkingConfig: { thinkingBudget: 0 }, candidateCount: 1,
+          responseMimeType: 'application/json',
+          responseJsonSchema: { type: 'object', properties: { sentences: { type: 'array', minItems: 2, maxItems: 4, items: { type: 'string', description: 'Oración breve con al menos una referencia {{ruta}} exacta de references; sin cifras literales.' } } }, required: ['sentences'], additionalProperties: false },
+        },
+      })
     } catch (error) { throw sdkFailure(error) }
     const finish = response.candidates?.[0]?.finishReason
     if (response.promptFeedback?.blockReason && response.promptFeedback.blockReason !== 'BLOCKED_REASON_UNSPECIFIED') throw new CopilotError('GEMINI_BLOCKED')
@@ -98,7 +98,7 @@ export function createHandler(env: Environment, provider = geminiProvider(env), 
       const diagnostic = failureEvent(error, stage, requestId, controller.signal.aborted)
       console.warn(JSON.stringify(diagnostic))
       const message = controller.signal.aborted ? 'La consulta tardó demasiado. Intenta de nuevo.' : 'No se obtuvo una explicación verificable del proveedor. Intenta de nuevo.'
-      return reply(controller.signal.aborted ? 504 : 502, { error: `${message} Código: ${diagnostic.code}. Referencia: ${requestId}.`, code: diagnostic.code, requestId })
+      return reply(controller.signal.aborted ? 504 : 502, { error: `${message} Código: ${diagnostic.code}. Referencia: ${requestId}.`, code: diagnostic.code, requestId, diagnostic: { stage: diagnostic.stage, httpStatus: diagnostic.httpStatus, providerStatus: diagnostic.providerStatus, providerReason: diagnostic.providerReason, finishReason: diagnostic.finishReason } })
     }
     finally { clearTimeout(timer); concurrent-- }
   }

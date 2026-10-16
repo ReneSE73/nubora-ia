@@ -167,6 +167,7 @@ describe('Diagnóstico seguro por etapa', () => {
       expect(event).toMatchObject({ event: 'copilot_failure', code: 'GEMINI_HTTP', stage: 'provider', httpStatus: status, providerStatus, requestId: body.requestId })
       expect(event.providerReason).toBe(reason === 'UNTRUSTED_SECRET' ? undefined : reason)
       expect(body.error).toContain(body.requestId)
+      expect(body.diagnostic).toMatchObject({ stage: 'provider', httpStatus: status, providerStatus })
       expect(JSON.stringify([body, log.mock.calls])).not.toMatch(/server-only-test-secret|SENSITIVE_PROMPT|SENSITIVE_METADATA|UNTRUSTED_SECRET/)
     } finally { log.mockRestore() }
   })
