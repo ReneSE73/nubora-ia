@@ -4,7 +4,7 @@ Chat de explicación, con llamadas **reales** a Google Gemini API mediante el SD
 
 ## Configurar en Vercel
 
-1. Importar el repositorio, seleccionar la rama del PR como Preview y preset Vite. `vercel.json` establece `npm run build`, salida `dist` y duración máxima de la función de 20 segundos. Node 22 o 24, npm y lockfile existente. Instalar con `npm ci`.
+1. Importar el repositorio, seleccionar la rama del PR como Preview. `vercel.json` usa `framework: null` (Other) y `npm run build`: Vite sigue compilando la SPA y un paso explícito genera `.vercel/output` con Build Output API v3. No activar un override de Output Directory a `dist` en el proyecto: debe consumirse `.vercel/output/config.json`, que publica la SPA y `/api/copilot`. La función declara Node 22 y duración máxima de 20 segundos. No modificar Production para esta revisión. Instalar con `npm ci`.
 2. En Settings → Environment Variables, verificar **sólo para el servidor**:
    - `GEMINI_API_KEY`: única clave del proveedor, leída explícitamente desde `process.env.GEMINI_API_KEY` en el servidor. Ya está configurada por el propietario en Preview y Production; no copiar ni mostrar su valor. No escribirla en el repositorio, chat ni capturas.
    - `GEMINI_MODEL`: opcional; predeterminado `gemini-2.5-flash-lite`. Modelo de texto con salida JSON estructurada y presupuesto de pensamiento configurable; también puede usarse `gemini-2.5-flash`. Ambos figuran con nivel gratuito en la documentación consultada; la disponibilidad, cuotas y facturación dependen del proyecto/región y pueden cambiar. No existe fallback a un modelo de pago. El modo de facturación de la cuenta no se decide desde el código.
@@ -14,7 +14,7 @@ Chat de explicación, con llamadas **reales** a Google Gemini API mediante el SD
 4. Configurar límites de gasto/cuota en el proyecto Gemini del proveedor y reglas de rate limiting/WAF en Vercel antes de abrirlo a tráfico público. El limitador en memoria es básico y NO es una cuota monetaria global.
 5. Para deshabilitar, establecer `COPILOT_ENABLED=false` y redesplegar.
 
-Para desarrollo de la función usar la CLI oficial `vercel dev`, con las mismas variables del servidor en `.env.local` (ignorado). `npm run dev` y `npm run preview` de Vite sirven sólo la SPA: sin función mostrarán indisponibilidad, nunca una respuesta falsa. No se requiere desplegar para ejecutar las pruebas con proveedor simulado.
+Para verificar empaquetado local ejecutar `npm run build` y `npm run test:runtime`, sin credenciales. El artefacto de despliegue es `.vercel/output`; usar la CLI oficial `vercel build`/`vercel deploy --prebuilt` sólo con un proyecto Preview autorizado (nunca `--prod` en esta revisión). `npm run dev` y `npm run preview` de Vite sirven sólo la SPA: sin función mostrarán indisponibilidad, nunca una respuesta falsa. No se requiere desplegar para ejecutar las pruebas con proveedor simulado.
 
 ## Contexto y funcionamiento
 
@@ -47,3 +47,32 @@ Validación de la migración: `npm install @google/genai` y `npm ci` (260 paquet
 
 ![Escritorio, sin configuración](screenshots/copilot-escritorio.png)
 ![Móvil, sin configuración](screenshots/copilot-movil.png)
+
+
+## Corrección de arranque Node ESM en Vercel
+
+**Causa reproducida:** el proyecto es ESM (`type: module`), pero `api/copilot.ts` importaba `../server/copilot` sin extensión. `moduleResolution: Bundler` acepta ese import para Vite/Vitest y `tsc --noEmit` no genera un artefacto serverless. La transpilación por archivo conserva el especificador en `api/copilot.js`; Node ESM busca literalmente `server/copilot`, sin añadir `.js`. La prueba reproduce `ERR_MODULE_NOT_FOUND` incluso cuando `server/copilot.js` sí existe. El log recibido no permite afirmar si ese archivo estaba además ausente en el despliegue original: la resolución sin extensión ya es un defecto confirmado. Añadir sólo `.js` en el primer import no resolvería todo el grafo (motores, contexto y JSON también dependen de resolución de bundler).
+
+**Solución:** `scripts/build-server.mjs` empaqueta `server/node-entry.ts` → `api/copilot.ts` → handler/contexto/motores/JSON/SDK y dependencias en un único `index.mjs`, usando esbuild para Node 22 ESM. No cambia la lógica de CU-01–CU-04 ni ML. `server/node-entry.ts` adapta HTTP de Node al handler Web existente, conserva streaming de entrada, cabeceras, estados y controles; el body sigue limitado por el handler. El shim `createRequire` permite imports nativos de dependencias CJS. Los addons opcionales de `ws` se desactivan en compilación mediante sus flags documentados en el paquete; usa fallback JS/Node, sin depender de binarios externos. Ninguna clave se lee o sustituye durante build.
+
+El script rechaza imports externos que no sean módulos nativos de Node, registra un metafile privado para auditar entradas e incluye el SDK Node `@google/genai`, sus dependencias y `results.json`. La salida es:
+
+```text
+.vercel/output/
+  config.json                          # rutas v3; API antes de fallback SPA
+  static/                              # copia exacta de dist, sin código servidor
+  functions/api/copilot.func/
+    .vc-config.json                    # nodejs22.x, index.mjs, launcher Nodejs, 20s
+    index.mjs                          # bundle autocontenido, no require de src ni node_modules
+  copilot-build-meta.json               # entradas/tamaños, fuera de static
+```
+
+Se reemplaza la detección/transpilación implícita del preset Vite por Build Output API explícita. Vercel monta sólo el contenido de `.func`, de modo que incluir archivos sueltos fuera no bastaría. `dist` se conserva para el preview habitual de la SPA. Los artefactos `.vercel/` están ignorados; sólo se versionan código/configuración del build. No se usa `includeFiles` como parche para imports inválidos.
+
+**Regresión:** `npm test` ejecuta las suites Vitest y luego dos tests Node (`npm run test:runtime`). Uno reproduce el error original tras transpilación TS a ESM. El otro construye con la misma función del build, comprueba inputs/manifest y copia únicamente `.func` a un directorio temporal fuera del repositorio. Un proceso Node nuevo carga el módulo sin loaders TS y sirve HTTP real local: GET 405, POST sin configuración 503, JSON inválido 400 y consulta válida con SDK real/transport simulado 502 controlado. Se usa una clave ficticia, entorno limpio y fetch simulado para el proveedor: no hay tráfico a Gemini. Se verifican dependencias durante carga, construcción de contexto, inicialización del SDK y transporte; esto es más amplio que importar fuentes con Vitest.
+
+Referencias: [resolución ESM de Node](https://nodejs.org/download/release/latest-v24.x/docs/api/esm.html), [Build Output API](https://vercel.com/docs/build-output-api), [configuración de funciones Node](https://vercel.com/docs/build-output-api/primitives).
+
+**Límite:** el arranque aislado y el artefacto local se verifican; no equivalen a una certificación del despliegue Preview remoto. No se realizó consulta real a Gemini ni se modificó Production. Tras el build automático del PR, verificar en Preview que `/api/copilot` responde con un estado controlado y desaparece `ERR_MODULE_NOT_FOUND`, antes de probar generación real.
+
+Validación final de esta corrección: `npm ci` (262 instalados, 263 auditados, 0 vulnerabilidades), `npm run build`, `npm test` (**169 Vitest + 2 runtime = 171 pruebas aprobadas**) y `npm run lint`, todos código 0. Las dos pruebas runtime también pasaron con Node 22 real (`npm exec --yes --package=node@22 -- node --test scripts/server-runtime.test.mjs`), además del Node 24 local. Bundle: 135 entradas, 1,937,130 bytes; auditoría sin dependencias externas salvo módulos nativos. Static sin SDK ni variables de clave. Diff vacío en `src/history`, `src/forecast`, `src/purchases`, `src/comparison`, `src/copilot`, `server/copilot.ts`, `api/copilot.ts` y `tsconfig.json`: se conserva su lógica y se corrige el empaquetado/launcher por separado.

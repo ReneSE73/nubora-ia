@@ -1,6 +1,5 @@
 {
-  "framework": "vite",
+  "framework": null,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "functions": { "api/copilot.ts": { "maxDuration": 20 } }
+  "installCommand": "npm ci"
 }
