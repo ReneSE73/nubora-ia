@@ -11,6 +11,7 @@
     "ml:export": "node --experimental-strip-types scripts/export-ml-data.mjs"
   },
   "dependencies": {
+    "@google/genai": "^2.30.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

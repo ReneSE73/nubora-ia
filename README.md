@@ -243,4 +243,4 @@ Verificación: **141 pruebas Vitest en 10 archivos**, **11 pruebas Python**, bui
 
 ## CU-05 · NUBORA AI Copilot
 
-Chat de explicación con API serverless real de OpenAI, deshabilitado hasta configurar el servidor. No altera los motores ni los pronósticos operativos. Incluye controles propios de contexto, referencias verificadas y aviso de datos sintéticos. [Configuración Vercel, variables, límites y pruebas](docs/copilot.md). Nunca usar `VITE_OPENAI_API_KEY` ni guardar claves en Git. No se ha probado inferencia real sin credenciales; los tests utilizan un proveedor simulado.
+Chat de explicación con API serverless real de Google Gemini mediante `@google/genai`, deshabilitado hasta configurar el servidor. No altera los motores ni los pronósticos operativos. Incluye controles propios de contexto, referencias verificadas y aviso de datos sintéticos. [Configuración Vercel, variables, límites y pruebas](docs/copilot.md). Nunca usar `VITE_GEMINI_API_KEY` ni guardar claves en Git. Las credenciales se configuran sólo en Vercel; los tests utilizan un proveedor simulado y no realizan llamadas reales.
