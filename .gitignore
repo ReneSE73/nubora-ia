@@ -11,3 +11,6 @@ coverage/
 __pycache__/
 *.pyc
 work/
+
+# Artefactos y configuración local de Vercel (no secretos en Git).
+.vercel/

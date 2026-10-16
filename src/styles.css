@@ -15,3 +15,22 @@
 
 /* ML informativo: no cambia tarjetas, modelos ni optimizador existentes. */
 .ml-section .ml-context,.ml-section .ml-conclusion,.ml-section .ml-warning,.ml-section .ml-details p{font-size:12px;line-height:1.8;color:#4c6243}.ml-section .ml-context{padding:16px 22px 0}.ml-section .ml-conclusion{margin:16px 22px;padding:12px 16px;background:#edf3e5;border-radius:7px}.ml-section .ml-warning{padding:18px 22px;color:#805e25}.ml-section .ml-details{padding:0 22px 20px}.ml-section .ml-details summary{font-size:12px;font-weight:600;cursor:pointer;padding:3px 0}.ml-section .ml-details p{margin-top:12px}.ml-section .ml-details a{display:inline-block;font-size:12px;margin-top:12px;text-decoration:underline}.ml-section .ml-details summary:focus-visible{outline:3px solid #b49145;outline-offset:3px}@media(max-width:640px){.ml-section .ml-context,.ml-section .ml-conclusion,.ml-section .ml-warning,.ml-section .ml-details p{font-size:11px}.ml-section .ml-conclusion{margin:12px 16px}.ml-section .ml-details{padding-inline:16px}}
+
+/* CU-05: estilos limitados al chat, sin alterar los casos existentes. */
+.copilot-body { padding: 22px; }
+.copilot-note, .copilot-empty { color: #526157; font-size: .88rem; line-height: 1.6; }
+.copilot-filters { border: 1px solid #d9dfd2; border-radius: 12px; padding: 16px; display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 12px; margin: 18px 0; min-width: 0; }
+.copilot label { display: grid; gap: 8px; font-size: .88rem; font-weight: 600; min-width: 0; }
+.copilot input, .copilot select, .copilot textarea { width: 100%; min-width: 0; border: 1px solid #bbc7b5; border-radius: 8px; padding: 10px; background: #fafbf7; font: inherit; }
+.copilot textarea { resize: vertical; margin: 8px 0; }
+.copilot button { border: 1px solid #bbc7b5; border-radius: 9px; padding: 10px 14px; background: #edf3df; color: #18352b; cursor: pointer; }
+.copilot button:disabled { opacity: .55; cursor: default; }
+.copilot-suggestions, .copilot-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.copilot-log { margin: 20px 0; max-height: 520px; overflow: auto; overflow-wrap: anywhere; }
+.copilot-message { border: 1px solid #d9dfd2; border-radius: 12px; padding: 16px; margin: 12px 0; background: #fafbf7; line-height: 1.65; }
+.copilot-message small { color: #526157; }
+.copilot-message p { white-space: pre-wrap; }
+.copilot-message [role=alert] { color: #8d371e; }
+.copilot details { margin-top: 12px; font-size: .85rem; }
+.copilot details ul { padding-left: 20px; }
+@media (max-width: 600px) { .copilot-body { padding: 14px; } .copilot-filters { grid-template-columns: 1fr; } .copilot-suggestions button { width: 100%; text-align: left; } }

@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "test": "vitest run",
+    "build": "tsc --noEmit && vite build && node scripts/build-server.mjs",
+    "test": "vitest run && npm run test:runtime",
     "lint": "eslint .",
-    "ml:export": "node --experimental-strip-types scripts/export-ml-data.mjs"
+    "ml:export": "node --experimental-strip-types scripts/export-ml-data.mjs",
+    "test:runtime": "node --test scripts/server-runtime.test.mjs"
   },
   "dependencies": {
+    "@google/genai": "^2.30.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -20,9 +22,11 @@
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.6.0",
+    "@types/node": "^22.20.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "esbuild": "^0.28.2",
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
