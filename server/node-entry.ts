@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { Readable } from 'node:stream'
-import copilot from '../api/copilot'
+import copilot from './web-entry'
 
 /** Adaptador Node HTTP del launcher Vercel; mantiene el handler Web y sus límites. */
 export default async function handler(req: IncomingMessage, res: ServerResponse) {

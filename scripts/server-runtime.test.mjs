@@ -19,7 +19,7 @@ test('reproduce el fallo original: Node ESM no agrega .js a un import relativo',
   try {
     await mkdir(resolve(dir, 'api')); await mkdir(resolve(dir, 'server'))
     await writeFile(resolve(dir, 'package.json'), '{"type":"module"}')
-    const source = await readFile(resolve(root, 'api/copilot.ts'), 'utf8')
+    const source = "import { createHandler } from '../server/copilot'; export default { fetch: createHandler({}) };"
     const emitted = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
     await writeFile(resolve(dir, 'api/copilot.js'), emitted)
     // El módulo existe con extensión .js; se falla antes de evaluar su contenido.
@@ -36,6 +36,9 @@ test('bundle desplegable carga aislado, incluye SDK/JSON y sirve HTTP sin accede
   try {
     const deployment = JSON.parse(await readFile(resolve(root, 'vercel.json'), 'utf8'))
     assert.equal(deployment.framework, null)
+    // Sin api/ fuente: impide que Vercel añada otra función autodetectada al mismo URL.
+    const { existsSync } = await import('node:fs')
+    assert.equal(existsSync(resolve(root, 'api')), false)
     assert.equal(deployment.buildCommand, 'npm run build')
     const pkg = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'))
     assert.match(pkg.scripts.build, /node scripts\/build-server\.mjs/)
@@ -46,7 +49,7 @@ test('bundle desplegable carga aislado, incluye SDK/JSON y sirve HTTP sin accede
     assert.deepEqual(routing.routes.slice(0, 2), [{ src: '/api/copilot', dest: '/api/copilot' }, { src: '/api/.*', status: 404 }])
     assert.deepEqual(routing.routes.at(-1), { src: '/.*', dest: '/index.html' })
     const inputs = Object.keys(metafile.inputs)
-    for (const path of ['api/copilot.ts', 'server/copilot.ts', 'src/copilot/context.ts', 'src/forecast/ml/results.json']) assert.ok(inputs.includes(path), `Falta ${path}`)
+    for (const path of ['server/web-entry.ts', 'server/copilot.ts', 'src/copilot/context.ts', 'src/forecast/ml/results.json']) assert.ok(inputs.includes(path), `Falta ${path}`)
     assert.ok(inputs.some(p => p.includes('@google/genai/dist/node/index.mjs')), 'Falta SDK Node de Gemini')
     const config = JSON.parse(await readFile(resolve(functionDir, '.vc-config.json'), 'utf8'))
     assert.equal(config.runtime, 'nodejs22.x'); assert.equal(config.handler, 'index.mjs')
