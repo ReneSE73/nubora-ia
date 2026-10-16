@@ -3,12 +3,14 @@ import History from './history/History'
 import Forecast from './forecast/Forecast'
 import PurchasePlan from './purchases/PurchasePlan'
 import Comparison from './comparison/Comparison'
+import Copilot from './copilot/Copilot'
 
 const modules = [
   { id: 'CU-01', title: 'Historial', symbol: '◷', description: 'Consulta los movimientos que darán contexto a tus decisiones de inventario.' },
   { id: 'CU-02', title: 'Pronóstico', symbol: '↗', description: 'Pronósticos demostrativos por SKU para enero, febrero y marzo de 2026.' },
   { id: 'CU-03', title: 'Plan de compra', symbol: '▤', description: 'Optimización matemática de compra con presupuesto global en pesos mexicanos.' },
   { id: 'CU-04', title: 'Comparación', symbol: '⇄', description: 'Compara el plan optimizado con un baseline proporcional bajo el mismo presupuesto.' },
+  { id: 'CU-05', title: 'AI Copilot', symbol: '✦', description: 'Explicaciones breves de tus resultados, fundamentadas en el contexto sintético.' },
 ] as const
 
 export default function App() {
@@ -30,9 +32,9 @@ export default function App() {
         <main id="contenido">
           <div className="flex flex-wrap items-center justify-between gap-4"><p className="eyebrow">TU INVENTARIO, CON PERSPECTIVA</p><span className="outline-badge">Aplicación en desarrollo</span></div>
           <div className="page-heading"><div><p className="case-id">{current.id}</p><h1>{current.title}</h1><p className="description">{current.description}</p></div><span className="heading-symbol" aria-hidden="true">{current.symbol}</span></div>
-          {active === 0 ? <History /> : active === 1 ? <Forecast /> : active === 2 ? <PurchasePlan /> : <Comparison />}
-          <section className="roadmap" aria-label="Ruta de trabajo"><p className="eyebrow">DE LOS DATOS A LA DECISIÓN</p><div className="roadmap-grid">{modules.map((item, index) => <button onClick={() => setActive(index)} className={`roadmap-item ${active === index ? 'active' : ''}`} key={item.id}><span className="roadmap-number">0{index + 1}</span><span><strong>{item.title}</strong><small>{index === 0 ? 'Ventas históricas' : index === 1 ? 'Demostrativo' : index === 2 ? 'Optimización' : 'Dos estrategias'}</small></span><span aria-hidden="true">↗</span></button>)}</div></section>
-          <footer className="footer"><span>nubora · Planea con claridad.</span><span>SPA inicial · Sin integraciones externas</span></footer>
+          {active === 0 ? <History /> : active === 1 ? <Forecast /> : active === 2 ? <PurchasePlan /> : active === 3 ? <Comparison /> : <Copilot />}
+          <section className="roadmap" aria-label="Ruta de trabajo"><p className="eyebrow">DE LOS DATOS A LA DECISIÓN</p><div className="roadmap-grid">{modules.map((item, index) => <button onClick={() => setActive(index)} className={`roadmap-item ${active === index ? 'active' : ''}`} key={item.id}><span className="roadmap-number">0{index + 1}</span><span><strong>{item.title}</strong><small>{index === 0 ? 'Ventas históricas' : index === 1 ? 'Demostrativo' : index === 2 ? 'Optimización' : index === 3 ? 'Dos estrategias' : 'Explicaciones con IA'}</small></span><span aria-hidden="true">↗</span></button>)}</div></section>
+          <footer className="footer"><span>nubora · Planea con claridad.</span><span>Datos sintéticos · Copilot requiere configuración</span></footer>
         </main>
       </div>
     </div>

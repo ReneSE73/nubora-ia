@@ -240,3 +240,7 @@ Reproducción, cortes, tamaños de muestra y limitaciones: [ml/README.md](ml/REA
 Validación temporal julio–septiembre 2025 (n=60 por modelo), prueba posterior octubre–diciembre (n=60). MAE de prueba ejecutado: Random Forest **9.90**, promedio móvil **17.883333333333333**, estacional ingenuo **9.416666666666666**. **Random Forest no supera al mejor baseline en esta prueba**. Ajuste final de 420 muestras con rezagos hasta diciembre 2025 y 60 pronósticos enero–marzo 2026. No se usan ventas futuras en las características ni se sustituyen los métodos operativos.
 
 Verificación: **141 pruebas Vitest en 10 archivos**, **11 pruebas Python**, build y lint correctos. Se prueba ausencia de fuga temporal, reproducción, JSON, datos incompletos y paridad de los baselines Python con las funciones TypeScript existentes. Muestra sintética pequeña: no se demuestra una mejora generalizable ni una garantía comercial.
+
+## CU-05 · NUBORA AI Copilot
+
+Chat de explicación con API serverless real de OpenAI, deshabilitado hasta configurar el servidor. No altera los motores ni los pronósticos operativos. Incluye controles propios de contexto, referencias verificadas y aviso de datos sintéticos. [Configuración Vercel, variables, límites y pruebas](docs/copilot.md). Nunca usar `VITE_OPENAI_API_KEY` ni guardar claves en Git. No se ha probado inferencia real sin credenciales; los tests utilizan un proveedor simulado.
