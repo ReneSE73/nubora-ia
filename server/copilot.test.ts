@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect, vi } from 'vitest'
+import { CopilotError, sdkFailure, failureEvent } from './diagnostics'
 import { createHandler, groundAnswer, geminiProvider, DEFAULT_GEMINI_MODEL } from './copilot'
 import { buildContext, defaults } from '../src/copilot/context'
 import { createDataset } from '../src/history/data'
@@ -143,5 +144,88 @@ describe('API con proveedor simulado', () => {
       sdk.generate.mockResolvedValueOnce(response)
       await expect(geminiProvider(env)('x', buildContext(defaults), new AbortController().signal)).rejects.toThrow()
     }
+  })
+})
+
+
+describe('Diagnóstico seguro por etapa', () => {
+  it.each([
+    [400, 'INVALID_ARGUMENT', 'API_KEY_INVALID'],
+    [403, 'PERMISSION_DENIED', 'API_KEY_SERVICE_BLOCKED'],
+    [404, 'NOT_FOUND', 'MODEL_NOT_FOUND'],
+    [429, 'RESOURCE_EXHAUSTED', 'QUOTA_EXCEEDED'],
+    [400, 'INVALID_ARGUMENT', 'UNTRUSTED_SECRET'],
+  ])('clasifica HTTP Gemini %s sin propagar mensajes', async (status, providerStatus, reason) => {
+    const log = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      sdk.generate.mockRejectedValueOnce({ status, message: JSON.stringify({ error: { status: providerStatus, message: env.GEMINI_API_KEY, details: [{ reason, metadata: { secret: 'SENSITIVE_METADATA' } }] } }) })
+      const r = await createHandler(env)(req({ question: 'SENSITIVE_PROMPT', settings: defaults }))
+      const body = await r.json()
+      expect(r.status).toBe(502); expect(body.code).toBe('GEMINI_HTTP')
+      expect(body.requestId).toMatch(/^[a-f0-9-]{36}$/)
+      const event = JSON.parse(log.mock.calls[0][0])
+      expect(event).toMatchObject({ event: 'copilot_failure', code: 'GEMINI_HTTP', stage: 'provider', httpStatus: status, providerStatus, requestId: body.requestId })
+      expect(event.providerReason).toBe(reason === 'UNTRUSTED_SECRET' ? undefined : reason)
+      expect(body.error).toContain(body.requestId)
+      expect(JSON.stringify([body, log.mock.calls])).not.toMatch(/server-only-test-secret|SENSITIVE_PROMPT|SENSITIVE_METADATA|UNTRUSTED_SECRET/)
+    } finally { log.mockRestore() }
+  })
+  it.each([
+    [{ promptFeedback: { blockReason: 'SAFETY' } }, 'GEMINI_BLOCKED'],
+    [{ candidates: [{ finishReason: 'SAFETY' }] }, 'GEMINI_BLOCKED'],
+    [{ candidates: [{ finishReason: 'MAX_TOKENS' }] }, 'GEMINI_INCOMPLETE'],
+    [{ candidates: [] }, 'GEMINI_INCOMPLETE'],
+    [{ candidates: [{ finishReason: 'SENSITIVE_FINISH' }] }, 'GEMINI_INCOMPLETE'],
+    [{ candidates: [{ finishReason: 'STOP' }], text: '' }, 'GEMINI_TEXT_INVALID'],
+    [{ candidates: [{ finishReason: 'STOP' }], text: '{secret-model-response' }, 'GEMINI_JSON_INVALID'],
+  ])('distingue bloqueo, incompletitud y JSON sin registrar texto', async (response, code) => {
+    const log = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      sdk.generate.mockResolvedValueOnce(response)
+      const r = await createHandler(env)(req())
+      expect((await r.json()).code).toBe(code)
+      const event = JSON.parse(log.mock.calls[0][0])
+      expect(event.stage).toBe('provider'); expect(event.code).toBe(code)
+      expect(JSON.stringify(log.mock.calls)).not.toMatch(/secret-model-response|SENSITIVE_FINISH/)
+    } finally { log.mockRestore() }
+  })
+  it.each([
+    [{ sentences: [] }, 'GROUND_SHAPE'],
+    [{ sentences: ['x'.repeat(601), '{{optimized.units}}'] }, 'GROUND_LENGTH'],
+    [{ sentences: ['{{unknown.sensitive_reference}}', '{{optimized.units}}'] }, 'GROUND_UNKNOWN_REFERENCE'],
+    [{ sentences: ['Sin referencia', '{{optimized.units}}'] }, 'GROUND_MISSING_REFERENCE'],
+    [{ sentences: ['Inventado 999 {{optimized.units}}', '{{optimized.units}}'] }, 'GROUND_FORBIDDEN_CONTENT'],
+    [{ sentences: ['{{optimized.units}} <script>', '{{optimized.units}}'] }, 'GROUND_FORBIDDEN_CONTENT'],
+  ])('clasifica rechazos de grounding sin debilitar validaciones', async (raw, code) => {
+    const log = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      const r = await createHandler(env, async () => raw)(req())
+      expect(r.status).toBe(502); expect((await r.json()).code).toBe(code)
+      expect(JSON.parse(log.mock.calls[0][0]).stage).toBe('grounding')
+      expect(JSON.stringify(log.mock.calls)).not.toContain('unknown.sensitive_reference')
+    } finally { log.mockRestore() }
+  })
+  it('envía un catálogo explícito de rutas válidas y acepta referencias numéricas y monetarias', async () => {
+    const raw = { sentences: ['Se recomiendan {{optimized.units}} unidades.', 'El gasto es {{optimized.spentMXN}} y el saldo es {{optimized.remainingMXN}}.'] }
+    sdk.generate.mockResolvedValueOnce({ candidates: [{ finishReason: 'STOP' }], text: JSON.stringify(raw) })
+    const log = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      const r = await createHandler(env)(req())
+      expect(r.status).toBe(200)
+      const body = await r.json()
+      expect(body.answer).toContain('764 unidades')
+      expect(body.sources).toHaveLength(3)
+      const input = JSON.parse(sdk.generate.mock.calls[0][0].contents)
+      expect(input.references['optimized.units']).toBe('764')
+      expect(input.references).toEqual(buildContext(defaults).evidence)
+      expect(log).not.toHaveBeenCalled()
+    } finally { log.mockRestore() }
+  })
+  it('clasifica errores SDK sin HTTP, internos y timeout sin mensajes arbitrarios', () => {
+    const id = 'test-correlation'
+    expect(failureEvent(sdkFailure(new Error('SENSITIVE')), 'provider', id, false).code).toBe('GEMINI_SDK')
+    expect(failureEvent(new Error('SENSITIVE'), 'context', id, false).code).toBe('COPILOT_INTERNAL')
+    expect(failureEvent(new CopilotError('GEMINI_HTTP'), 'provider', id, true).code).toBe('COPILOT_TIMEOUT')
+    expect(JSON.stringify(failureEvent(sdkFailure({ status: 500, message: 'SENSITIVE' }), 'provider', id, false))).not.toContain('SENSITIVE')
   })
 })
