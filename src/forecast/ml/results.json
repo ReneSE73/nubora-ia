@@ -1,0 +1,4181 @@
+{
+  "schema_version": 1,
+  "status": "ready",
+  "information_only": true,
+  "model": {
+    "name": "RandomForestRegressor",
+    "parameters": {
+      "n_estimators": 160,
+      "max_depth": 6,
+      "min_samples_leaf": 2,
+      "random_state": 42,
+      "n_jobs": 1
+    }
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "scikit_learn": "1.7.2",
+    "numpy": "2.5.4"
+  },
+  "dataset": {
+    "signature": "fnv1a32-36a92ee0",
+    "sha256": "a60598d18f568e8adb0b5ee209d91c5339dcd8e562dcbcb5b38f22cd95aab007",
+    "sku_count": 20,
+    "record_count": 480,
+    "period": [
+      "2024-01",
+      "2025-12"
+    ],
+    "eligible_skus": [
+      "SKU-001",
+      "SKU-002",
+      "SKU-003",
+      "SKU-004",
+      "SKU-005",
+      "SKU-006",
+      "SKU-007",
+      "SKU-008",
+      "SKU-009",
+      "SKU-010",
+      "SKU-011",
+      "SKU-012",
+      "SKU-013",
+      "SKU-014",
+      "SKU-015",
+      "SKU-016",
+      "SKU-017",
+      "SKU-018",
+      "SKU-019",
+      "SKU-020"
+    ],
+    "excluded_skus": [],
+    "stockout_records": 44
+  },
+  "features": [
+    "month",
+    "sku_one_hot",
+    "lag_1",
+    "lag_2",
+    "lag_3"
+  ],
+  "methodology": {
+    "split": "Validación julio-septiembre 2025; prueba posterior octubre-diciembre 2025. Sin partición aleatoria.",
+    "horizon": 3,
+    "recursion": "Cada horizonte incorpora predicciones internas sin redondear; no ventas observadas posteriores al origen.",
+    "rounding": "Entero más cercano, .5 hacia arriba, mínimo cero; MAE sobre valores publicados para todos los modelos.",
+    "selection": "Parámetros fijos antes de evaluar; sin tuning ni selección automática para optimización.",
+    "cohort": "SKU con 24 meses completos; las tres métricas usan la intersección idéntica de SKU/mes en cada periodo."
+  },
+  "training": {
+    "period": [
+      "2024-04",
+      "2025-12"
+    ],
+    "historical_period": [
+      "2024-01",
+      "2025-12"
+    ],
+    "cutoff": "2025-12",
+    "sample_count": 420
+  },
+  "evaluation": {
+    "validation": {
+      "origin": "2025-06",
+      "period": [
+        "2025-07",
+        "2025-09"
+      ],
+      "training_sample_count": 300,
+      "sample_count": 60,
+      "metrics": [
+        {
+          "model": "random_forest",
+          "label": "Random Forest",
+          "mae": 9.816666666666666,
+          "n": 60
+        },
+        {
+          "model": "moving_average",
+          "label": "Promedio móvil 3 meses",
+          "mae": 8.733333333333333,
+          "n": 60
+        },
+        {
+          "model": "seasonal_naive",
+          "label": "Estacional ingenuo",
+          "mae": 9.216666666666667,
+          "n": 60
+        }
+      ],
+      "predictions": [
+        {
+          "sku": "SKU-001",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 30,
+          "model": "random_forest",
+          "actual": 29.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 29,
+          "model": "random_forest",
+          "actual": 28.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 26,
+          "model": "random_forest",
+          "actual": 26.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 35,
+          "model": "random_forest",
+          "actual": 34.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 36,
+          "model": "random_forest",
+          "actual": 14.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 36,
+          "model": "random_forest",
+          "actual": 43.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 38,
+          "model": "random_forest",
+          "actual": 38.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 33,
+          "model": "random_forest",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 35,
+          "model": "random_forest",
+          "actual": 34.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 49,
+          "model": "random_forest",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 51,
+          "model": "random_forest",
+          "actual": 40.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 51,
+          "model": "random_forest",
+          "actual": 38.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 57,
+          "model": "random_forest",
+          "actual": 47.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 62,
+          "model": "random_forest",
+          "actual": 44.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 64,
+          "model": "random_forest",
+          "actual": 42.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 61,
+          "model": "random_forest",
+          "actual": 34.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 62,
+          "model": "random_forest",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 65,
+          "model": "random_forest",
+          "actual": 46.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 59,
+          "model": "random_forest",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 63,
+          "model": "random_forest",
+          "actual": 53.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 66,
+          "model": "random_forest",
+          "actual": 50.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 67,
+          "model": "random_forest",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 65,
+          "model": "random_forest",
+          "actual": 57.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 64,
+          "model": "random_forest",
+          "actual": 54.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 68,
+          "model": "random_forest",
+          "actual": 66.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 68,
+          "model": "random_forest",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 69,
+          "model": "random_forest",
+          "actual": 52.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 63,
+          "model": "random_forest",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 66,
+          "model": "random_forest",
+          "actual": 78.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 66,
+          "model": "random_forest",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 82,
+          "model": "random_forest",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 85,
+          "model": "random_forest",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 88,
+          "model": "random_forest",
+          "actual": 65.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 94,
+          "model": "random_forest",
+          "actual": 79.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 92,
+          "model": "random_forest",
+          "actual": 74.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 91,
+          "model": "random_forest",
+          "actual": 69.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 92,
+          "model": "random_forest",
+          "actual": 84.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 92,
+          "model": "random_forest",
+          "actual": 60.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 92,
+          "model": "random_forest",
+          "actual": 73.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 86,
+          "model": "random_forest",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 86,
+          "model": "random_forest",
+          "actual": 82.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 86,
+          "model": "random_forest",
+          "actual": 77.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 98,
+          "model": "random_forest",
+          "actual": 93.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 94,
+          "model": "random_forest",
+          "actual": 86.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 91,
+          "model": "random_forest",
+          "actual": 81.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 102,
+          "model": "random_forest",
+          "actual": 97.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 96,
+          "model": "random_forest",
+          "actual": 91.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 93,
+          "model": "random_forest",
+          "actual": 98.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 104,
+          "model": "random_forest",
+          "actual": 84.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 97,
+          "model": "random_forest",
+          "actual": 108.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 93,
+          "model": "random_forest",
+          "actual": 89.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 105,
+          "model": "random_forest",
+          "actual": 119.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 97,
+          "model": "random_forest",
+          "actual": 99.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 92,
+          "model": "random_forest",
+          "actual": 93.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 110,
+          "model": "random_forest",
+          "actual": 111.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 99,
+          "model": "random_forest",
+          "actual": 103.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 96,
+          "model": "random_forest",
+          "actual": 97.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 108,
+          "model": "random_forest",
+          "actual": 115.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 99,
+          "model": "random_forest",
+          "actual": 107.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 96,
+          "model": "random_forest",
+          "actual": 83.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 29,
+          "model": "moving_average",
+          "actual": 29.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 29,
+          "model": "moving_average",
+          "actual": 28.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 29,
+          "model": "moving_average",
+          "actual": 26.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 33,
+          "model": "moving_average",
+          "actual": 34.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 34,
+          "model": "moving_average",
+          "actual": 14.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 34,
+          "model": "moving_average",
+          "actual": 43.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 32,
+          "model": "moving_average",
+          "actual": 38.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 31,
+          "model": "moving_average",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 34,
+          "model": "moving_average",
+          "actual": 34.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 42,
+          "model": "moving_average",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 43,
+          "model": "moving_average",
+          "actual": 40.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 43,
+          "model": "moving_average",
+          "actual": 38.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 50,
+          "model": "moving_average",
+          "actual": 47.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 53,
+          "model": "moving_average",
+          "actual": 44.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 55,
+          "model": "moving_average",
+          "actual": 42.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 55,
+          "model": "moving_average",
+          "actual": 34.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 58,
+          "model": "moving_average",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 56,
+          "model": "moving_average",
+          "actual": 46.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 53,
+          "model": "moving_average",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 56,
+          "model": "moving_average",
+          "actual": 53.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 56,
+          "model": "moving_average",
+          "actual": 50.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 60,
+          "model": "moving_average",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 61,
+          "model": "moving_average",
+          "actual": 57.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 62,
+          "model": "moving_average",
+          "actual": 54.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 64,
+          "model": "moving_average",
+          "actual": 66.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 65,
+          "model": "moving_average",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 66,
+          "model": "moving_average",
+          "actual": 52.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 62,
+          "model": "moving_average",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 62,
+          "model": "moving_average",
+          "actual": 78.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 60,
+          "model": "moving_average",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 73,
+          "model": "moving_average",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 75,
+          "model": "moving_average",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 75,
+          "model": "moving_average",
+          "actual": 65.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 81,
+          "model": "moving_average",
+          "actual": 79.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 84,
+          "model": "moving_average",
+          "actual": 74.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 87,
+          "model": "moving_average",
+          "actual": 69.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 86,
+          "model": "moving_average",
+          "actual": 84.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 89,
+          "model": "moving_average",
+          "actual": 60.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 87,
+          "model": "moving_average",
+          "actual": 73.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 84,
+          "model": "moving_average",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 81,
+          "model": "moving_average",
+          "actual": 82.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 86,
+          "model": "moving_average",
+          "actual": 77.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 90,
+          "model": "moving_average",
+          "actual": 93.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 92,
+          "model": "moving_average",
+          "actual": 86.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 93,
+          "model": "moving_average",
+          "actual": 81.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 94,
+          "model": "moving_average",
+          "actual": 97.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 97,
+          "model": "moving_average",
+          "actual": 91.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 97,
+          "model": "moving_average",
+          "actual": 98.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 99,
+          "model": "moving_average",
+          "actual": 84.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 101,
+          "model": "moving_average",
+          "actual": 108.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 102,
+          "model": "moving_average",
+          "actual": 89.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 97,
+          "model": "moving_average",
+          "actual": 119.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 104,
+          "model": "moving_average",
+          "actual": 99.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 104,
+          "model": "moving_average",
+          "actual": 93.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 112,
+          "model": "moving_average",
+          "actual": 111.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 116,
+          "model": "moving_average",
+          "actual": 103.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 119,
+          "model": "moving_average",
+          "actual": 97.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 116,
+          "model": "moving_average",
+          "actual": 115.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 120,
+          "model": "moving_average",
+          "actual": 107.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 119,
+          "model": "moving_average",
+          "actual": 83.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 24,
+          "model": "seasonal_naive",
+          "actual": 29.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 36,
+          "model": "seasonal_naive",
+          "actual": 28.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 21,
+          "model": "seasonal_naive",
+          "actual": 26.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 42,
+          "model": "seasonal_naive",
+          "actual": 34.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 27,
+          "model": "seasonal_naive",
+          "actual": 14.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 7,
+          "model": "seasonal_naive",
+          "actual": 43.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 33,
+          "model": "seasonal_naive",
+          "actual": 38.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 31,
+          "model": "seasonal_naive",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 29,
+          "model": "seasonal_naive",
+          "actual": 34.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 38,
+          "model": "seasonal_naive",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 35,
+          "model": "seasonal_naive",
+          "actual": 40.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 33,
+          "model": "seasonal_naive",
+          "actual": 38.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 42,
+          "model": "seasonal_naive",
+          "actual": 47.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 39,
+          "model": "seasonal_naive",
+          "actual": 44.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 37,
+          "model": "seasonal_naive",
+          "actual": 42.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 47,
+          "model": "seasonal_naive",
+          "actual": 34.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 26,
+          "model": "seasonal_naive",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 41,
+          "model": "seasonal_naive",
+          "actual": 46.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 51,
+          "model": "seasonal_naive",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 48,
+          "model": "seasonal_naive",
+          "actual": 53.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 58,
+          "model": "seasonal_naive",
+          "actual": 50.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 56,
+          "model": "seasonal_naive",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 65,
+          "model": "seasonal_naive",
+          "actual": 57.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 49,
+          "model": "seasonal_naive",
+          "actual": 54.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 74,
+          "model": "seasonal_naive",
+          "actual": 66.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 56,
+          "model": "seasonal_naive",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 52,
+          "model": "seasonal_naive",
+          "actual": 52.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 47,
+          "model": "seasonal_naive",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 60,
+          "model": "seasonal_naive",
+          "actual": 78.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 56,
+          "model": "seasonal_naive",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 70,
+          "model": "seasonal_naive",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 65,
+          "model": "seasonal_naive",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 60,
+          "model": "seasonal_naive",
+          "actual": 65.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 74,
+          "model": "seasonal_naive",
+          "actual": 79.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 69,
+          "model": "seasonal_naive",
+          "actual": 74.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 64,
+          "model": "seasonal_naive",
+          "actual": 69.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 79,
+          "model": "seasonal_naive",
+          "actual": 84.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 73,
+          "model": "seasonal_naive",
+          "actual": 60.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 50,
+          "model": "seasonal_naive",
+          "actual": 73.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 83,
+          "model": "seasonal_naive",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 77,
+          "model": "seasonal_naive",
+          "actual": 82.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 85,
+          "model": "seasonal_naive",
+          "actual": 77.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 88,
+          "model": "seasonal_naive",
+          "actual": 93.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 94,
+          "model": "seasonal_naive",
+          "actual": 86.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 76,
+          "model": "seasonal_naive",
+          "actual": 81.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 105,
+          "model": "seasonal_naive",
+          "actual": 97.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 86,
+          "model": "seasonal_naive",
+          "actual": 91.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 80,
+          "model": "seasonal_naive",
+          "actual": 98.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 97,
+          "model": "seasonal_naive",
+          "actual": 84.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 72,
+          "model": "seasonal_naive",
+          "actual": 108.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 84,
+          "model": "seasonal_naive",
+          "actual": 89.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 101,
+          "model": "seasonal_naive",
+          "actual": 119.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 94,
+          "model": "seasonal_naive",
+          "actual": 99.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 88,
+          "model": "seasonal_naive",
+          "actual": 93.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 106,
+          "model": "seasonal_naive",
+          "actual": 111.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 98,
+          "model": "seasonal_naive",
+          "actual": 103.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 92,
+          "model": "seasonal_naive",
+          "actual": 97.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-07",
+          "horizon": 1,
+          "origin": "2025-06",
+          "units": 110,
+          "model": "seasonal_naive",
+          "actual": 115.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-08",
+          "horizon": 2,
+          "origin": "2025-06",
+          "units": 102,
+          "model": "seasonal_naive",
+          "actual": 107.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-09",
+          "horizon": 3,
+          "origin": "2025-06",
+          "units": 96,
+          "model": "seasonal_naive",
+          "actual": 83.0,
+          "stockout": true
+        }
+      ]
+    },
+    "test": {
+      "origin": "2025-09",
+      "period": [
+        "2025-10",
+        "2025-12"
+      ],
+      "training_sample_count": 360,
+      "sample_count": 60,
+      "metrics": [
+        {
+          "model": "random_forest",
+          "label": "Random Forest",
+          "mae": 9.9,
+          "n": 60
+        },
+        {
+          "model": "moving_average",
+          "label": "Promedio móvil 3 meses",
+          "mae": 17.883333333333333,
+          "n": 60
+        },
+        {
+          "model": "seasonal_naive",
+          "label": "Estacional ingenuo",
+          "mae": 9.416666666666666,
+          "n": 60
+        }
+      ],
+      "predictions": [
+        {
+          "sku": "SKU-001",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 27,
+          "model": "random_forest",
+          "actual": 41.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 27,
+          "model": "random_forest",
+          "actual": 16.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 27,
+          "model": "random_forest",
+          "actual": 37.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 39,
+          "model": "random_forest",
+          "actual": 32.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 36,
+          "model": "random_forest",
+          "actual": 40.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 37,
+          "model": "random_forest",
+          "actual": 43.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 37,
+          "model": "random_forest",
+          "actual": 36.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 44,
+          "model": "random_forest",
+          "actual": 45.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 51,
+          "model": "random_forest",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 46,
+          "model": "random_forest",
+          "actual": 41.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 54,
+          "model": "random_forest",
+          "actual": 50.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "random_forest",
+          "actual": 55.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 47,
+          "model": "random_forest",
+          "actual": 27.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 55,
+          "model": "random_forest",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "random_forest",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 50,
+          "model": "random_forest",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 54,
+          "model": "random_forest",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 55,
+          "model": "random_forest",
+          "actual": 80.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "random_forest",
+          "actual": 53.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 59,
+          "model": "random_forest",
+          "actual": 80.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 62,
+          "model": "random_forest",
+          "actual": 73.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 58,
+          "model": "random_forest",
+          "actual": 71.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 63,
+          "model": "random_forest",
+          "actual": 72.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 68,
+          "model": "random_forest",
+          "actual": 61.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 60,
+          "model": "random_forest",
+          "actual": 62.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 66,
+          "model": "random_forest",
+          "actual": 77.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 71,
+          "model": "random_forest",
+          "actual": 84.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 64,
+          "model": "random_forest",
+          "actual": 66.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 73,
+          "model": "random_forest",
+          "actual": 83.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 80,
+          "model": "random_forest",
+          "actual": 90.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 67,
+          "model": "random_forest",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 77,
+          "model": "random_forest",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 93,
+          "model": "random_forest",
+          "actual": 96.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 71,
+          "model": "random_forest",
+          "actual": 74.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 84,
+          "model": "random_forest",
+          "actual": 76.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 95,
+          "model": "random_forest",
+          "actual": 102.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 71,
+          "model": "random_forest",
+          "actual": 79.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 82,
+          "model": "random_forest",
+          "actual": 99.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 94,
+          "model": "random_forest",
+          "actual": 121.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 84,
+          "model": "random_forest",
+          "actual": 83.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 97,
+          "model": "random_forest",
+          "actual": 117.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 111,
+          "model": "random_forest",
+          "actual": 114.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 83,
+          "model": "random_forest",
+          "actual": 100.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 98,
+          "model": "random_forest",
+          "actual": 110.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 113,
+          "model": "random_forest",
+          "actual": 120.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 94,
+          "model": "random_forest",
+          "actual": 73.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 126,
+          "model": "random_forest",
+          "actual": 115.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 138,
+          "model": "random_forest",
+          "actual": 126.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 89,
+          "model": "random_forest",
+          "actual": 96.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 107,
+          "model": "random_forest",
+          "actual": 121.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 120,
+          "model": "random_forest",
+          "actual": 132.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 93,
+          "model": "random_forest",
+          "actual": 100.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 123,
+          "model": "random_forest",
+          "actual": 126.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 138,
+          "model": "random_forest",
+          "actual": 138.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 95,
+          "model": "random_forest",
+          "actual": 104.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 126,
+          "model": "random_forest",
+          "actual": 131.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 139,
+          "model": "random_forest",
+          "actual": 126.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 89,
+          "model": "random_forest",
+          "actual": 108.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 104,
+          "model": "random_forest",
+          "actual": 137.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 119,
+          "model": "random_forest",
+          "actual": 163.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 28,
+          "model": "moving_average",
+          "actual": 41.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 27,
+          "model": "moving_average",
+          "actual": 16.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 27,
+          "model": "moving_average",
+          "actual": 37.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 30,
+          "model": "moving_average",
+          "actual": 32.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 29,
+          "model": "moving_average",
+          "actual": 40.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 34,
+          "model": "moving_average",
+          "actual": 43.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 40,
+          "model": "moving_average",
+          "actual": 36.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 41,
+          "model": "moving_average",
+          "actual": 45.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 38,
+          "model": "moving_average",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 45,
+          "model": "moving_average",
+          "actual": 41.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 41,
+          "model": "moving_average",
+          "actual": 50.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 41,
+          "model": "moving_average",
+          "actual": 55.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 44,
+          "model": "moving_average",
+          "actual": 27.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 43,
+          "model": "moving_average",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 43,
+          "model": "moving_average",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 43,
+          "model": "moving_average",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 46,
+          "model": "moving_average",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 45,
+          "model": "moving_average",
+          "actual": 80.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 53,
+          "model": "moving_average",
+          "actual": 53.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 52,
+          "model": "moving_average",
+          "actual": 80.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 52,
+          "model": "moving_average",
+          "actual": 73.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 57,
+          "model": "moving_average",
+          "actual": 71.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "moving_average",
+          "actual": 72.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "moving_average",
+          "actual": 61.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 60,
+          "model": "moving_average",
+          "actual": 62.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 58,
+          "model": "moving_average",
+          "actual": 77.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "moving_average",
+          "actual": 84.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 70,
+          "model": "moving_average",
+          "actual": 66.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 70,
+          "model": "moving_average",
+          "actual": 83.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 67,
+          "model": "moving_average",
+          "actual": 90.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 74,
+          "model": "moving_average",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 70,
+          "model": "moving_average",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 70,
+          "model": "moving_average",
+          "actual": 96.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 74,
+          "model": "moving_average",
+          "actual": 74.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 72,
+          "model": "moving_average",
+          "actual": 76.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 72,
+          "model": "moving_average",
+          "actual": 102.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 72,
+          "model": "moving_average",
+          "actual": 79.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 68,
+          "model": "moving_average",
+          "actual": 99.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 71,
+          "model": "moving_average",
+          "actual": 121.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 82,
+          "model": "moving_average",
+          "actual": 83.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 80,
+          "model": "moving_average",
+          "actual": 117.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 80,
+          "model": "moving_average",
+          "actual": 114.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 87,
+          "model": "moving_average",
+          "actual": 100.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 85,
+          "model": "moving_average",
+          "actual": 110.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 84,
+          "model": "moving_average",
+          "actual": 120.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 95,
+          "model": "moving_average",
+          "actual": 73.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 95,
+          "model": "moving_average",
+          "actual": 115.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 96,
+          "model": "moving_average",
+          "actual": 126.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 94,
+          "model": "moving_average",
+          "actual": 96.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 97,
+          "model": "moving_average",
+          "actual": 121.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 93,
+          "model": "moving_average",
+          "actual": 132.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 104,
+          "model": "moving_average",
+          "actual": 100.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 99,
+          "model": "moving_average",
+          "actual": 126.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 98,
+          "model": "moving_average",
+          "actual": 138.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 104,
+          "model": "moving_average",
+          "actual": 104.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 101,
+          "model": "moving_average",
+          "actual": 131.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 101,
+          "model": "moving_average",
+          "actual": 126.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 102,
+          "model": "moving_average",
+          "actual": 108.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 97,
+          "model": "moving_average",
+          "actual": 137.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 94,
+          "model": "moving_average",
+          "actual": 163.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 23,
+          "model": "seasonal_naive",
+          "actual": 41.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 29,
+          "model": "seasonal_naive",
+          "actual": 16.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-001",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 14,
+          "model": "seasonal_naive",
+          "actual": 37.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 27,
+          "model": "seasonal_naive",
+          "actual": 32.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 35,
+          "model": "seasonal_naive",
+          "actual": 40.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-002",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 38,
+          "model": "seasonal_naive",
+          "actual": 43.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 31,
+          "model": "seasonal_naive",
+          "actual": 36.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 40,
+          "model": "seasonal_naive",
+          "actual": 45.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-003",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 44,
+          "model": "seasonal_naive",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 36,
+          "model": "seasonal_naive",
+          "actual": 41.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 45,
+          "model": "seasonal_naive",
+          "actual": 50.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-004",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 63,
+          "model": "seasonal_naive",
+          "actual": 55.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 40,
+          "model": "seasonal_naive",
+          "actual": 27.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 46,
+          "model": "seasonal_naive",
+          "actual": 56.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-005",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "seasonal_naive",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 57,
+          "model": "seasonal_naive",
+          "actual": 49.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 56,
+          "model": "seasonal_naive",
+          "actual": 61.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-006",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 62,
+          "model": "seasonal_naive",
+          "actual": 80.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 48,
+          "model": "seasonal_naive",
+          "actual": 53.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 62,
+          "model": "seasonal_naive",
+          "actual": 80.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-007",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 68,
+          "model": "seasonal_naive",
+          "actual": 73.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 53,
+          "model": "seasonal_naive",
+          "actual": 71.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 67,
+          "model": "seasonal_naive",
+          "actual": 72.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-008",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 74,
+          "model": "seasonal_naive",
+          "actual": 61.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 39,
+          "model": "seasonal_naive",
+          "actual": 62.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 72,
+          "model": "seasonal_naive",
+          "actual": 77.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-009",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 79,
+          "model": "seasonal_naive",
+          "actual": 84.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 61,
+          "model": "seasonal_naive",
+          "actual": 66.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 78,
+          "model": "seasonal_naive",
+          "actual": 83.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-010",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 85,
+          "model": "seasonal_naive",
+          "actual": 90.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 65,
+          "model": "seasonal_naive",
+          "actual": 70.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 83,
+          "model": "seasonal_naive",
+          "actual": 88.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-011",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 104,
+          "model": "seasonal_naive",
+          "actual": 96.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 69,
+          "model": "seasonal_naive",
+          "actual": 74.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 102,
+          "model": "seasonal_naive",
+          "actual": 76.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-012",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 79,
+          "model": "seasonal_naive",
+          "actual": 102.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 87,
+          "model": "seasonal_naive",
+          "actual": 79.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 94,
+          "model": "seasonal_naive",
+          "actual": 99.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-013",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 103,
+          "model": "seasonal_naive",
+          "actual": 121.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 78,
+          "model": "seasonal_naive",
+          "actual": 83.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 99,
+          "model": "seasonal_naive",
+          "actual": 117.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-014",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 109,
+          "model": "seasonal_naive",
+          "actual": 114.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 82,
+          "model": "seasonal_naive",
+          "actual": 100.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 105,
+          "model": "seasonal_naive",
+          "actual": 110.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-015",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 115,
+          "model": "seasonal_naive",
+          "actual": 120.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 86,
+          "model": "seasonal_naive",
+          "actual": 73.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 92,
+          "model": "seasonal_naive",
+          "actual": 115.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-016",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 121,
+          "model": "seasonal_naive",
+          "actual": 126.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 91,
+          "model": "seasonal_naive",
+          "actual": 96.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 116,
+          "model": "seasonal_naive",
+          "actual": 121.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-017",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 127,
+          "model": "seasonal_naive",
+          "actual": 132.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 95,
+          "model": "seasonal_naive",
+          "actual": 100.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 121,
+          "model": "seasonal_naive",
+          "actual": 126.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-018",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 146,
+          "model": "seasonal_naive",
+          "actual": 138.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 99,
+          "model": "seasonal_naive",
+          "actual": 104.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 139,
+          "model": "seasonal_naive",
+          "actual": 131.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-019",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 139,
+          "model": "seasonal_naive",
+          "actual": 126.0,
+          "stockout": true
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-10",
+          "horizon": 1,
+          "origin": "2025-09",
+          "units": 98,
+          "model": "seasonal_naive",
+          "actual": 108.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-11",
+          "horizon": 2,
+          "origin": "2025-09",
+          "units": 132,
+          "model": "seasonal_naive",
+          "actual": 137.0,
+          "stockout": false
+        },
+        {
+          "sku": "SKU-020",
+          "month": "2025-12",
+          "horizon": 3,
+          "origin": "2025-09",
+          "units": 145,
+          "model": "seasonal_naive",
+          "actual": 163.0,
+          "stockout": false
+        }
+      ]
+    }
+  },
+  "forecast": {
+    "model": "random_forest",
+    "origin": "2025-12",
+    "period": [
+      "2026-01",
+      "2026-03"
+    ],
+    "rows": [
+      {
+        "sku": "SKU-001",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 31
+      },
+      {
+        "sku": "SKU-001",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 30
+      },
+      {
+        "sku": "SKU-001",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 33
+      },
+      {
+        "sku": "SKU-002",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 33
+      },
+      {
+        "sku": "SKU-002",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 32
+      },
+      {
+        "sku": "SKU-002",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 35
+      },
+      {
+        "sku": "SKU-003",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 43
+      },
+      {
+        "sku": "SKU-003",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 38
+      },
+      {
+        "sku": "SKU-003",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 39
+      },
+      {
+        "sku": "SKU-004",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 49
+      },
+      {
+        "sku": "SKU-004",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 53
+      },
+      {
+        "sku": "SKU-004",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 55
+      },
+      {
+        "sku": "SKU-005",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 50
+      },
+      {
+        "sku": "SKU-005",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 57
+      },
+      {
+        "sku": "SKU-005",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 58
+      },
+      {
+        "sku": "SKU-006",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 59
+      },
+      {
+        "sku": "SKU-006",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 57
+      },
+      {
+        "sku": "SKU-006",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 59
+      },
+      {
+        "sku": "SKU-007",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 52
+      },
+      {
+        "sku": "SKU-007",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 59
+      },
+      {
+        "sku": "SKU-007",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 58
+      },
+      {
+        "sku": "SKU-008",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 57
+      },
+      {
+        "sku": "SKU-008",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 60
+      },
+      {
+        "sku": "SKU-008",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 62
+      },
+      {
+        "sku": "SKU-009",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 68
+      },
+      {
+        "sku": "SKU-009",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 65
+      },
+      {
+        "sku": "SKU-009",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 67
+      },
+      {
+        "sku": "SKU-010",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 66
+      },
+      {
+        "sku": "SKU-010",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 65
+      },
+      {
+        "sku": "SKU-010",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 67
+      },
+      {
+        "sku": "SKU-011",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 67
+      },
+      {
+        "sku": "SKU-011",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 66
+      },
+      {
+        "sku": "SKU-011",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 68
+      },
+      {
+        "sku": "SKU-012",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 66
+      },
+      {
+        "sku": "SKU-012",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 65
+      },
+      {
+        "sku": "SKU-012",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 67
+      },
+      {
+        "sku": "SKU-013",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 72
+      },
+      {
+        "sku": "SKU-013",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 71
+      },
+      {
+        "sku": "SKU-013",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 74
+      },
+      {
+        "sku": "SKU-014",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 74
+      },
+      {
+        "sku": "SKU-014",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 75
+      },
+      {
+        "sku": "SKU-014",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 85
+      },
+      {
+        "sku": "SKU-015",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 76
+      },
+      {
+        "sku": "SKU-015",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 81
+      },
+      {
+        "sku": "SKU-015",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 86
+      },
+      {
+        "sku": "SKU-016",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 75
+      },
+      {
+        "sku": "SKU-016",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 80
+      },
+      {
+        "sku": "SKU-016",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 86
+      },
+      {
+        "sku": "SKU-017",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 81
+      },
+      {
+        "sku": "SKU-017",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 82
+      },
+      {
+        "sku": "SKU-017",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 89
+      },
+      {
+        "sku": "SKU-018",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 78
+      },
+      {
+        "sku": "SKU-018",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 82
+      },
+      {
+        "sku": "SKU-018",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 88
+      },
+      {
+        "sku": "SKU-019",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 79
+      },
+      {
+        "sku": "SKU-019",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 81
+      },
+      {
+        "sku": "SKU-019",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 86
+      },
+      {
+        "sku": "SKU-020",
+        "month": "2026-01",
+        "horizon": 1,
+        "origin": "2025-12",
+        "units": 82
+      },
+      {
+        "sku": "SKU-020",
+        "month": "2026-02",
+        "horizon": 2,
+        "origin": "2025-12",
+        "units": 83
+      },
+      {
+        "sku": "SKU-020",
+        "month": "2026-03",
+        "horizon": 3,
+        "origin": "2025-12",
+        "units": 91
+      }
+    ]
+  },
+  "warnings": [
+    "DEMOSTRATIVO: datos sintéticos; no predicciones comerciales garantizadas.",
+    "Muestra pequeña: 24 meses por SKU y un único origen de prueba; las observaciones de un mismo trimestre están relacionadas.",
+    "Ventas observadas pueden subestimar demanda por faltantes. No se estiman ventas perdidas ni promociones futuras.",
+    "MAE global agregado, no prueba de mejora generalizable; ML no reemplaza los pronósticos usados por CU-03/CU-04."
+  ]
+}

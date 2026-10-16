@@ -24,7 +24,7 @@ Para instalaciones reproducibles a partir de package-lock.json puede usarse `npm
 ## Alcance
 
 - **CU-01 Historial:** dataset ficticio fijo, filtros por SKU/categoría/periodo, gráfico y resumen mensual, indicadores, comparación anual y detalle paginado.
-- **CU-02 Pronóstico:** 60 pronósticos demostrativos por SKU para enero, febrero y marzo de 2026, selección de método y validación temporal MAE/WAPE.
+- **CU-02 Pronóstico:** conserva sus métodos operativos y agrega una sección Machine Learning informativa: Random Forest entrenado en Python, evaluación temporal y JSON reproducible, sin sustituir pronósticos de optimización.
 - **CU-03 Plan de compra:** recomendación exacta y determinista de cantidades enteras bajo presupuesto global MXN, con exclusiones explícitas y filtros sólo de presentación.
 - **CU-04 Comparación:** plan óptimo de CU-03 frente a baseline proporcional exacto, con presupuesto compartido, diferencias explicadas y filtros sólo de presentación.
 
@@ -37,7 +37,10 @@ Los datos son de demostración, claramente identificados en pantalla. No hay bac
 - `src/history/analysis.ts`: funciones puras de filtros, agregación, indicadores, calidad y comparación.
 - `src/history/History.tsx`, `MonthlyChart.tsx`: filtros, gráfico SVG accesible y tablas responsive.
 - `src/history/*.test.ts*`: pruebas de datos, cálculos y presentación.
-- `src/forecast/engine.ts`: funciones puras de pronóstico, backtesting, selección y filtros sobre el dataset de CU-01.
+- `src/forecast/engine.ts`: funciones operativas puras de pronóstico, sin cambios por ML.
+- `ml/train.py`, `ml/test_train.py`, `ml/requirements.txt`: entrenamiento batch real, pruebas y dependencias Python fijadas.
+- `scripts/export-ml-data.mjs`: exporta el fixture llamando a createDataset().
+- `src/forecast/MachineLearning.tsx`, `src/forecast/ml/results.json`: informe informativo y artefacto de entrenamiento.
 - `src/forecast/Forecast.tsx`, `ForecastChart.tsx`: pantalla y gráfica que separa histórico de pronóstico.
 - `src/forecast/*.test.ts*`: cálculos, fuga temporal, ceros, insuficiencia de datos y consistencia de filtros/tabla/gráfico.
 - `src/purchases/model.ts`: presupuesto decimal exacto, preparación de datos de CU-01/CU-02, solver, resumen y filtros de presentación.
@@ -56,7 +59,7 @@ No se requieren variables de entorno. `.gitignore` excluye `node_modules`, `dist
 
 ## Revisión
 
-CU-01, CU-02 y CU-03 ya están integrados en `main`. CU-04 se prepara en `feat/cu04-comparacion`, creada desde `main` actualizado (b093e10), con PR en borrador hacia `main` y sin integración automática. Antes de integrar, ejecutar instalación, compilación, pruebas y lint. Revisar en navegador a 375 px y escritorio, navegación por teclado y los cuatro casos de uso.
+Los cuatro casos de uso están integrados en `main`. La sección ML informativa se prepara en `feat/cu02-ml-lite`, creada desde `main` actualizado (8b4994e), con PR en borrador hacia `main` y sin integración automática. Antes de integrar, ejecutar instalación, compilación, pruebas y lint. Revisar en navegador a 375 px y escritorio, navegación por teclado y los cuatro casos de uso.
 
 
 ## Dataset ficticio reproducible (v1)
@@ -226,3 +229,14 @@ Diferencias: **+238 unidades, +MXN 321.25 de gasto y +6.66 puntos porcentuales**
 `npm ci`, `npm run build`, `npm test` y `npm run lint` ejecutados correctamente. Suite: **135 pruebas aprobadas en 9 archivos**. Incluye 2,784 casos pequeños comparando factibilidad y unidades optimizadas >= baseline; cero, insuficiente, suficiente, necesidad cero, exclusiones y costos inválidos, redondeo, centavos, BigInt mayor que MAX_SAFE_INTEGER, límites de conversión, signos de diferencias, empates, identidad de entradas, consistencia, determinismo, no mutación y filtros sin recálculo. Se conservan las suites anteriores y se prueba navegación entre los cuatro casos de uso.
 
 La instalación final auditó 225 paquetes (224 instalados), con cero vulnerabilidades. Se mantienen avisos de obsolescencia de ESLint 9 y whatwg-encoding. Revisión del build en escritorio y móvil 375 px sin desbordamiento horizontal de página; filtrar Hogar muestra cinco filas con ambas tarjetas globales intactas. Capturas: [escritorio](docs/screenshots/cu04-escritorio.png) y [móvil](docs/screenshots/cu04-movil.png).
+
+
+## CU-02 · Machine Learning mínimo real
+
+Sección **Machine Learning** con un RandomForestRegressor global, semilla 42, mes/SKU/rezagos 1–3 y entrenamiento real en Python. Reutiliza createDataset() mediante exportación automática; no cambia `src/forecast/engine.ts`, `src/history`, `src/purchases` ni `src/comparison`. El ML sólo informa: los pronósticos usados por la optimización permanecen iguales.
+
+Reproducción, cortes, tamaños de muestra y limitaciones: [ml/README.md](ml/README.md). Artefacto versionado y descargable desde CU-02: [results.json](src/forecast/ml/results.json). No requiere Python para ejecutar la SPA, sólo para regenerar el informe.
+
+Validación temporal julio–septiembre 2025 (n=60 por modelo), prueba posterior octubre–diciembre (n=60). MAE de prueba ejecutado: Random Forest **9.90**, promedio móvil **17.883333333333333**, estacional ingenuo **9.416666666666666**. **Random Forest no supera al mejor baseline en esta prueba**. Ajuste final de 420 muestras con rezagos hasta diciembre 2025 y 60 pronósticos enero–marzo 2026. No se usan ventas futuras en las características ni se sustituyen los métodos operativos.
+
+Verificación: **141 pruebas Vitest en 10 archivos**, **11 pruebas Python**, build y lint correctos. Se prueba ausencia de fuga temporal, reproducción, JSON, datos incompletos y paridad de los baselines Python con las funciones TypeScript existentes. Muestra sintética pequeña: no se demuestra una mejora generalizable ni una garantía comercial.

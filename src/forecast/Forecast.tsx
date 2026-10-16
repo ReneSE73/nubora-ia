@@ -4,6 +4,7 @@ import type { Dataset } from '../history/data'
 import { monthLabel } from '../history/analysis'
 import { analyzeForecast, METHOD_LABELS } from './engine'
 import ForecastChart from './ForecastChart'
+import MachineLearning from './MachineLearning'
 
 const metric = (value: number | null) => value === null ? 'N/D' : new Intl.NumberFormat('es-MX', { maximumFractionDigits: 2 }).format(value)
 
@@ -15,6 +16,7 @@ export default function Forecast({ dataset = demoDataset }: { dataset?: Dataset 
   const incomplete = results.filter(result => !result.complete)
   return <div className="history forecast">
     <section className="intro-card" aria-label="Pronóstico demostrativo"><div className="intro-icon" aria-hidden="true">↗</div><div><h2>DEMOSTRATIVO · Enero a marzo de 2026</h2><p>Pronósticos orientativos por SKU desde el mismo historial sintético de CU-01 (enero 2024–diciembre 2025). No son predicciones comerciales garantizadas.</p></div><span className="step-label">CU-02</span></section>
+    <MachineLearning dataset={dataset} />
     <section className="data-panel filters-panel" aria-label="Filtros del pronóstico"><div className="forecast-filters">
       <label>SKU<select value={sku} onChange={e => setSku(e.target.value)}><option value="">Todos los SKU</option>{dataset.products.map(product => <option key={product.sku} value={product.sku}>{product.sku} · {product.name}</option>)}</select></label>
       <label>Categoría<select value={category} onChange={e => setCategory(e.target.value)}><option value="">Todas las categorías</option>{[...new Set(dataset.products.map(product => product.category))].map(value => <option key={value}>{value}</option>)}</select></label>

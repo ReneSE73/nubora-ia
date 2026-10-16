@@ -5,3 +5,9 @@ dist/
 coverage/
 *.local
 .DS_Store
+
+# Entrenamiento local: no versionar entornos, cachés ni el dataset exportado.
+.venv/
+__pycache__/
+*.pyc
+work/
